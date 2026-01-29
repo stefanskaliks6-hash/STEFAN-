@@ -1,0 +1,18 @@
+{
+  "university": "Sample State University",
+  "city": "Sample City, ST",
+  "budget_range": "$900 - $1,300/month",
+  "move_in_date": "2025-08-15",
+  "duration_months": 12,
+  "roommates": "2 roommates",
+  "transportation": "Bus + bike",
+  "pets": "No pets",
+  "accessibility": "Elevator access preferred",
+  "safety_notes": "Well-lit area close to campus",
+  "preferences": [
+    "Furnished unit",
+    "In-unit laundry",
+    "Quiet study spaces",
+    "Reliable high-speed internet"
+  ]
+}
