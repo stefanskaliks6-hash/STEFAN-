@@ -1,6 +1,6 @@
 # Response: Québec solidaire's Rent Increase Promise
 
-*Source used: the housing page of Québec solidaire's website, [version of the page, e.g. English/French], accessed [date accessed].*
+*Source used: the housing page of Québec solidaire's website (https://quebecsolidaire.net/theme/logement), [French or English version], accessed [date accessed].*
 
 The promise I chose is Québec solidaire's plan to limit rent increases to the rate of inflation for one year and then reform how permitted rent increases are calculated. The page presents this as the first flagship measure of a seven-part housing plan. According to the party, the freeze would give tenants some relief and better protect them from drastic rent increases (Québec solidaire, n.d.). Rent could still go up during that year, but not faster than inflation. After the first year, the way permitted increases are calculated would be reformed, but the page does not explain how the new calculation would work.
 
@@ -12,7 +12,7 @@ One question I still have is how Québec solidaire would make sure the quality o
 
 ## Reference
 
-Québec solidaire. (n.d.). *[Title of the housing page]*. Retrieved [date accessed], from [URL of the page]
+Québec solidaire. (n.d.). *Logement* [Housing]. Retrieved [date accessed], from https://quebecsolidaire.net/theme/logement
 
 ## AI disclosure
 
