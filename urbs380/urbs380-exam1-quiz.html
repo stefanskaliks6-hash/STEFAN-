@@ -1,0 +1,557 @@
+<title>URBS 380 Exam 1 Drill</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: a single study column, like a field notebook — setup strip on top, one question card, feedback below. */
+:root {
+  --bg: #f3f5f2;
+  --surface: #ffffff;
+  --ink: #18231f;
+  --muted: #5b6862;
+  --line: #d6ddd8;
+  --accent: #1d6b57;      /* topo-map green */
+  --accent-ink: #ffffff;
+  --accent-soft: #e2efe9;
+  --ochre: #b7791f;
+  --good: #1f7a3d;
+  --good-soft: #e3f3e7;
+  --bad: #b3261e;
+  --bad-soft: #fbe7e5;
+  --font-display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --font-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111715; --surface: #1a2320; --ink: #e6ece9; --muted: #9aa8a1; --line: #2e3a36;
+    --accent: #4fb596; --accent-ink: #0d1412; --accent-soft: #1c3a31; --ochre: #e0a54a;
+    --good: #5fcf83; --good-soft: #17301f; --bad: #f08a80; --bad-soft: #3a1c1a;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #111715; --surface: #1a2320; --ink: #e6ece9; --muted: #9aa8a1; --line: #2e3a36;
+  --accent: #4fb596; --accent-ink: #0d1412; --accent-soft: #1c3a31; --ochre: #e0a54a;
+  --good: #5fcf83; --good-soft: #17301f; --bad: #f08a80; --bad-soft: #3a1c1a;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.5; }
+.wrap { max-width: 760px; margin: 0 auto; padding-inline: 16px; padding-block: 24px 64px; display: grid; gap: 20px; }
+header { display: grid; gap: 4px; }
+.eyebrow { font-family: var(--font-mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+h1 { font-family: var(--font-display); font-weight: 800; font-size: clamp(28px, 6vw, 40px); line-height: 1.05; margin: 0; text-wrap: balance; letter-spacing: -.01em; }
+.sub { color: var(--muted); margin: 0; font-size: 14px; }
+
+.setup { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px; display: grid; gap: 14px; }
+.setup summary { cursor: pointer; font-family: var(--font-display); font-weight: 700; font-size: 15px; }
+.setup[open] summary { margin-bottom: 12px; }
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.label { font-size: 12px; font-family: var(--font-mono); text-transform: uppercase; letter-spacing: .06em; color: var(--muted); width: 100%; }
+.chip { font: inherit; font-size: 13px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); border-radius: 999px; padding: 6px 12px; cursor: pointer; display: inline-flex; gap: 6px; align-items: center; }
+.chip[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.chip .stars { color: var(--ochre); font-size: 11px; letter-spacing: -1px; }
+.chip[aria-pressed="true"] .stars { color: inherit; }
+.chip .n { font-family: var(--font-mono); font-size: 11px; opacity: .7; }
+.btn { font: inherit; font-weight: 600; border-radius: 8px; padding: 10px 18px; cursor: pointer; border: 1px solid var(--accent); background: var(--accent); color: var(--accent-ink); }
+.btn.ghost { background: transparent; color: var(--accent); }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+:focus-visible { outline: 3px solid var(--ochre); outline-offset: 2px; }
+.setup-sep { height: 1px; background: var(--line); margin-block: 4px; }
+
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 20px; display: grid; gap: 16px; }
+.meta { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; align-items: center; font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
+.tag { background: var(--accent-soft); color: var(--accent); padding: 3px 8px; border-radius: 4px; text-transform: uppercase; letter-spacing: .05em; }
+.bar { height: 6px; background: var(--line); border-radius: 3px; overflow: hidden; }
+.bar > i { display: block; height: 100%; background: var(--accent); width: 0; transition: width .25s ease; }
+.q { font-family: var(--font-display); font-weight: 700; font-size: clamp(18px, 4.2vw, 22px); line-height: 1.3; margin: 0; text-wrap: pretty; }
+.opts { display: grid; gap: 10px; }
+.opt { font: inherit; text-align: left; display: grid; grid-template-columns: 28px 1fr; gap: 10px; align-items: start; padding: 12px 14px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); cursor: pointer; transition: border-color .15s, background .15s; }
+.opt:hover:not(:disabled) { border-color: var(--accent); }
+.opt .k { font-family: var(--font-mono); font-size: 13px; width: 24px; height: 24px; border-radius: 4px; display: grid; place-items: center; border: 1px solid var(--line); background: var(--surface); }
+.opt span:last-child { min-width: 0; }
+.opt:disabled { cursor: default; }
+.opt.right { border-color: var(--good); background: var(--good-soft); }
+.opt.right .k { background: var(--good); color: var(--surface); border-color: var(--good); }
+.opt.wrong { border-color: var(--bad); background: var(--bad-soft); }
+.opt.wrong .k { background: var(--bad); color: var(--surface); border-color: var(--bad); }
+.opt.dim { opacity: .55; }
+.fb { border-left: 4px solid var(--good); background: var(--good-soft); padding: 12px 14px; border-radius: 0 8px 8px 0; display: grid; gap: 4px; }
+.fb.no { border-color: var(--bad); background: var(--bad-soft); }
+.fb b { font-family: var(--font-display); }
+.fb p { margin: 0; }
+.actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: space-between; align-items: center; }
+.hint { font-size: 12px; color: var(--muted); }
+.score { display: flex; gap: 16px; font-family: var(--font-mono); font-size: 13px; }
+.score .g { color: var(--good); } .score .r { color: var(--bad); }
+
+.done h2 { font-family: var(--font-display); font-size: 28px; margin: 0; }
+.big { font-family: var(--font-display); font-weight: 800; font-size: 56px; line-height: 1; font-variant-numeric: tabular-nums; }
+.tbl-wrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+td, th { text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--line); }
+th { font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); font-weight: 500; }
+td.num { font-variant-numeric: tabular-nums; font-family: var(--font-mono); white-space: nowrap; }
+.pill { display: inline-block; padding: 1px 8px; border-radius: 999px; font-size: 12px; font-family: var(--font-mono); }
+.pill.ok { background: var(--good-soft); color: var(--good); }
+.pill.weak { background: var(--bad-soft); color: var(--bad); }
+.missed-list { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.missed-list li { border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; display: grid; gap: 2px; background: var(--bg); }
+.missed-list .a { color: var(--good); font-weight: 600; }
+.missed-list .e { color: var(--muted); font-size: 14px; }
+footer { color: var(--muted); font-size: 12px; text-align: center; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">URBS 380 · Test 1 · Wed Oct 7</div>
+    <h1>Exam 1 Drill</h1>
+    <p class="sub">Multiple-choice and true/false questions built from your study guide. Missed questions come back until you get them right.</p>
+  </header>
+
+  <details class="setup" id="setup" open>
+    <summary>Choose topics and round size</summary>
+    <div class="row">
+      <div class="label">Topics (★★★ = most likely on the exam)</div>
+      <div class="row" id="topics"></div>
+      <div class="row">
+        <button class="chip" id="allTopics" type="button">Select all</button>
+        <button class="chip" id="hiTopics" type="button">★★★ only</button>
+      </div>
+    </div>
+    <div class="setup-sep"></div>
+    <div class="row">
+      <div class="label">Questions per round</div>
+      <div class="row" id="sizes"></div>
+    </div>
+    <div class="setup-sep"></div>
+    <div class="row">
+      <button class="btn" id="start" type="button">Start new round</button>
+      <button class="btn ghost" id="startMissed" type="button">Drill my missed questions (<span id="missedCount">0</span>)</button>
+    </div>
+  </details>
+
+  <section class="card" id="quiz" aria-live="polite"></section>
+
+  <footer>Keys: 1–4 or A–D to answer, Enter for next. Your missed list is saved in this browser only.</footer>
+</div>
+
+<script>
+const TOPICS = {
+  mult:    { name: "Base multiplier", stars: 3 },
+  staples: { name: "Staples theory", stars: 3 },
+  supply:  { name: "Supply-side & Lynch", stars: 3 },
+  trc:     { name: "TRC Action #92", stars: 3 },
+  lq:      { name: "Location quotients", stars: 2 },
+  shift:   { name: "Shift-share", stars: 2 },
+  assume:  { name: "Assumption method", stars: 2 },
+  hh:      { name: "Heartland–hinterland", stars: 2 },
+  terms:   { name: "Terms", stars: 2 },
+  loc:     { name: "Location theory", stars: 1 },
+  agg:     { name: "Agglomeration", stars: 1 },
+  base:    { name: "Economic base theory", stars: 1 },
+  road:    { name: "Colonization Road", stars: 1 },
+};
+// [topic, question, [correct, wrong, wrong, wrong], explanation]. Options are shuffled when shown (True/False stays in order).
+const TF = ["True", "False"];
+const Q = [
+// ---------- LOCATION THEORY ----------
+["loc","Weber's (1909) location model is best described as a…",["Least-cost model: firms seek to minimize costs","Profit-maximization model","Central place model","Demand-cone model"],"Weber = least-cost model. The key factor is transport cost (weight × distance), so firms minimize ton-mileage."],
+["loc","Where should a soda production facility (weight-gaining) locate under Weber?",["Near the market","Near the raw materials","Halfway between materials and market","Wherever labour is cheapest"],"Weight-gaining: outputs are heavier than inputs, so locate near the market (soft drinks, cars)."],
+["loc","Where should a furniture factory (weight-losing) locate under Weber?",["Near the raw materials","Near the market","At a port","Near the labour pool"],"Weight-losing: raw materials are heavier than outputs, so locate near raw materials (e.g., metal smelting)."],
+["loc","What is the basic unit of cost in Weber's model?",["The ton-mile","The labour-hour","The isodapane","The dollar of sales"],"Transport cost = weight of materials × distance, so the unit is the ton-mile."],
+["loc","Which is NOT one of the four key assumptions of early location theory (P-S-T-I)?",["Firms rely on government subsidies to choose sites","Perfect information: firms act in a perfectly rational, economistic way","Raw materials, markets and cheap labour located at single points in space","An isotropic plane: a featureless surface"],"P-S-T-I: Perfect information · Single points · Transport costs emphasized · Isotropic plane."],
+["loc","True or false: Weber's model assumes an isotropic plane.",TF,"True. It assumes a \"featureless surface that overlooks geographic unevenness.\" This is also one of its limitations."],
+["loc","Why is the emphasis on transport costs now seen as a limitation?",["Transport costs have dropped considerably and are now a far less significant component of costs","Transport costs have risen too fast to model","Weber ignored transport costs entirely","Transport costs only matter for services"],"Her slide: transport costs \"have dropped considerably\"; Coe et al.: \"now a far less significant component.\""],
+["loc","In Weber's model, the critical isodapane marks…",["Where savings on labour just offset the extra transport cost","The boundary of the market area","The location of raw materials","Where agglomeration begins"],"Isodapanes are lines of equal extra transport cost. The critical one is where cheap-labour savings exactly offset that cost."],
+["loc","According to Weber's labour index, a firm moves to a cheap-labour site only if…",["The labour savings are greater than the extra transport cost","Labour is unionized at the original site","The market moves first","The government offers a subsidy"],"Labour costs matter \"if the activity is labour intensive,\" and only when the savings exceed the added transport cost."],
+["loc","Weber's model was built for an era when industry located near…",["Energy, raw materials and transport (e.g., the Ruhr coalfields)","Universities and research parks","Airports and fibre-optic networks","Suburban office parks"],"Coe et al.: a least-cost model for the era of Germany's Ruhr coalfields."],
+["loc","In Weber's 'locational triangle' there is one plant, one market and…",["Two raw material sources","Two markets","Two labour pools","Three plants"],"Locational triangle = one plant, two raw material sources, one market."],
+
+// ---------- BASE MULTIPLIER ----------
+["mult","What is the formula for the base multiplier?",["Total employment ÷ base employment","Base employment ÷ total employment","Non-base employment ÷ total employment","Total employment − base employment"],"Base multiplier = total ÷ base. It counts the base job itself plus the non-base jobs it supports."],
+["mult","The multiplier effect (\"indirect multiplier\") equals…",["Base multiplier − 1, which is the same as non-base ÷ base","Base multiplier + 1","Total ÷ non-base","Base ÷ non-base"],"Multiplier effect = base multiplier − 1 = non-base ÷ base. It is the number of non-base jobs per base job."],
+["mult","Twin Peaks has 2,000 base (timber) jobs and 4,000 non-base (service) jobs. What is the base multiplier?",["3.0","2.0","1.5","0.5"],"Total = 6,000. 6,000 ÷ 2,000 = 3.0. Each base job supports 3 jobs in total."],
+["mult","Twin Peaks has 2,000 base jobs and 4,000 non-base jobs. What is the multiplier effect?",["2.0","3.0","0.5","6.0"],"3.0 − 1 = 2.0 (or 4,000 ÷ 2,000). Each base job creates 2 non-base jobs."],
+["mult","A region has 12,000 total jobs and 4,000 base jobs. What is the base multiplier?",["3.0","2.0","0.33","8,000"],"12,000 ÷ 4,000 = 3.0, so the multiplier effect is 2.0."],
+["mult","The base multiplier is 2.5 and 400 new base jobs arrive. How many total new jobs result?",["1,000","600","1,400","400"],"400 × 2.5 = 1,000 total new jobs (400 base + 600 non-base)."],
+["mult","The base multiplier is 2.5 and 400 new base jobs arrive. How many of the new jobs are non-base?",["600","1,000","400","1,600"],"Non-base = 400 × (2.5 − 1) = 400 × 1.5 = 600."],
+["mult","The base multiplier is 2.0 and total employment is 10,000. How many base jobs are there?",["5,000","20,000","2,000","10,000"],"Base = total ÷ multiplier = 10,000 ÷ 2.0 = 5,000."],
+["mult","Lecture 5 table: total employment 110,500, base employment 49,000. What is the base multiplier?",["2.26","1.26","2.88","0.44"],"110,500 ÷ 49,000 = 2.26. Multiplier effect = 1.26."],
+["mult","In her table example, what does the multiplier effect of 1.26 represent?",["For each new base job created, 1.26 non-base jobs are created","Each base job supports 1.26 jobs in total","Employment grows 1.26% per year","1.26 base jobs per non-base job"],"\"For each new base job created, the model estimates 1.26 non-base jobs will be created.\""],
+["mult","200 new base jobs arrive and the base multiplier is 2.88. How many total new workers result?",["576","376","200","288"],"200 × 2.88 = 576 total (200 base + 376 non-base)."],
+["mult","200 new base jobs arrive and the base multiplier is 2.88. How many new non-base jobs result?",["376","576","288","176"],"576 − 200 = 376, which is the same as 200 × 1.88."],
+["mult","The base multiplier is 2.2 and a plant with 300 base jobs closes. How many jobs are lost in total?",["660","360","300","960"],"Closures work in reverse: 300 × 2.2 = 660 jobs lost."],
+["mult","Base jobs: forestry 1,200 + manufacturing 2,300 + tourism 1,500. Non-base: 8,000. Total: 13,000. What is the base multiplier?",["2.6","1.6","1.625","0.38"],"Base = 5,000. 13,000 ÷ 5,000 = 2.6. Multiplier effect = 1.6."],
+["mult","Same town (base multiplier 2.6): a mill adds 250 base jobs. What is the projected total impact?",["650 total new workers","400 total new workers","250 total new workers","900 total new workers"],"250 × 2.6 = 650 total (250 base + 400 non-base)."],
+["mult","TRAP: multiplying new base jobs by the base multiplier gives you…",["Total new jobs, including the base jobs themselves","Only the new non-base jobs","Only the new base jobs","The multiplier effect"],"Base multiplier × new base jobs = TOTAL. For non-base only, use the multiplier effect (multiplier − 1)."],
+["mult","Why does the multiplier work?",["The income of base workers is spent and re-spent locally","Base firms hire more managers","Governments match each base job","Imports rise with each base job"],"\"The income of base workers is spent and re-spent locally.\""],
+["mult","Projections that use the base multiplier assume…",["The region's economic structure doesn't change","Leakage increases over time","All industries are basic","Exports fall"],"Her slide: projections assume \"the region's economic structure doesn't change.\""],
+["mult","A base multiplier can be expressed in…",["Jobs, output ($ sales) or income","Jobs only","Income only","Population only"],"It can be calculated for jobs, output ($ sales) or income."],
+["mult","Miller (2017): multipliers usually range from…",["1.0 to 3.0","0 to 1.0","5 to 10","10 to 20"],"Miller: usually 1.0–3.0, higher with more local purchases and in larger areas."],
+["mult","Which area would typically have the LARGER multiplier?",["A whole state (e.g., 2.1)","A single county (e.g., 1.5)","They are always equal","A single firm"],"Larger areas capture more re-spending (county 1.5 → state 2.1)."],
+["mult","Miller: a $1 changes hands 5 times, but the multiplier is 1.66. This shows that…",["Turnover is not the same as the multiplier","The multiplier equals turnover","The multiplier is always 5","Leakage does not exist"],"Turnover ≠ multiplier. Each round some money leaks out, so the total impact is $1.66."],
+["mult","In Miller's definition, an \"export\" means…",["Sales beyond the community's borders, not only international sales","Only sales to other countries","Only sales of raw materials","Any sale to a local resident"],"\"Export\" = sales beyond the community's borders."],
+["mult","Miller's Lumberland sawmill: 300 new jobs with an employment multiplier of 2.1 gives…",["630 total jobs (330 extra)","600 total jobs","330 total jobs","2,100 total jobs"],"300 × 2.1 = 630 total; 630 − 300 = 330 extra."],
+["mult","Lamb's formula Y = (1 + k)E. What is k?",["Non-basic ÷ basic (the multiplier effect)","Basic ÷ total","Total ÷ basic","The leakage rate"],"k = non-basic ÷ basic. So (1 + k) is the base multiplier and k is the multiplier effect."],
+["mult","$1.00 of exports → $0.40 re-spent locally → $0.16 → $0.06 → $0.03 → $0.01. What is the multiplier?",["1.66","1.00","0.66","5.0"],"Total impact = $1.66, so the multiplier is 1.66. The rest leaks."],
+["mult","Does more leakage raise or lower the multiplier?",["Lowers it","Raises it","No effect","Doubles it"],"\"Leakage reduces the multiplier.\""],
+["mult","Which is NOT a source of leakage (I-O-R-M)?",["Base workers buying groceries from local stores","Imports of goods and services","Outside owners taking profits elsewhere","Remittances sent abroad"],"I-O-R-M: Imports · Outside owners · Remittances · Migratory labour flows (Lamb 2007). Local spending stays in the region."],
+
+// ---------- LOCATION QUOTIENTS ----------
+["lq","How is a location quotient (LQ) calculated?",["Local % of jobs in the industry ÷ national % of jobs in the industry","National % ÷ local %","Industry jobs ÷ all local jobs","Base jobs ÷ total jobs"],"LQ = (eᵢ ÷ e) ÷ (Eᵢ ÷ E) = local share ÷ national share."],
+["lq","An industry has an LQ of 0.7. Classify it.",["Non-basic","Basic","Partly basic","Cannot tell"],"LQ ≤ 1 means non-basic: all of its jobs are non-base."],
+["lq","TRAP: an industry has an LQ of exactly 1.0. Classify it.",["Non-basic","Basic","Half basic, half non-basic","Export-dominant"],"LQ = 1 means \"the region and the country are equally specialized,\" so it is non-basic."],
+["lq","An industry has an LQ of 2.5. Classify it.",["Basic, but only the 'excess' jobs are base","Entirely basic: all jobs are base","Non-basic","Non-basic because it exceeds 2"],"LQ > 1 means basic, but only the \"excess\" is base. The rest serves local demand."],
+["lq","What does an LQ of 1.85 imply?",["The region produces more than it needs locally and exports some of it","The region imports this product","The industry is non-basic","The industry is declining"],"LQ > 1: \"producing more than is needed locally and therefore exporting.\""],
+["lq","Utilities: LQ = 1.46 with 2,000 jobs. How many are BASE jobs?",["≈ 627","≈ 1,373","2,000","≈ 2,920"],"Non-base = (1 ÷ 1.46) × 2,000 ≈ 1,373. Base = 2,000 − 1,373 = 627."],
+["lq","Utilities: LQ = 1.46 with 2,000 jobs. How many are NON-BASE jobs?",["≈ 1,373","≈ 627","0","2,000"],"Non-base = (1 ÷ LQ) × eᵢ = 2,000 ÷ 1.46 ≈ 1,373."],
+["lq","An industry has 1,500 of a region's 20,000 jobs. Nationally it has 3% of jobs. What is the LQ?",["2.5","7.5","0.4","4.5"],"Local share = 1,500 ÷ 20,000 = 7.5%. LQ = 7.5 ÷ 3 = 2.5."],
+["lq","Same industry (1,500 jobs, LQ 2.5). How many are base jobs?",["900","600","1,500","0"],"Non-base = 1,500 ÷ 2.5 = 600. Base = 1,500 − 600 = 900."],
+["lq","Split 1,000 jobs at an LQ of 1.25. How many are base jobs?",["200","800","1,000","250"],"Non-base = 1,000 ÷ 1.25 = 800. Base = 200."],
+["lq","Region: 40,000 jobs, 2,400 in mining. Nation: 8,000,000 jobs, 160,000 in mining. What is the LQ?",["3.0","6.0","2.0","0.33"],"Local 6% ÷ national 2% = 3.0, so mining is basic."],
+["lq","Region: 40,000 jobs, 2,400 in mining. Nation: 8,000,000 jobs, 160,000 in mining. How many BASE mining jobs?",["1,600","800","2,400","720"],"LQ = 3.0. Non-base = 2,400 ÷ 3 = 800. Base = 2,400 − 800 = 1,600."],
+["lq","Finance is 5% of local jobs and 5% of national jobs. Classify it.",["LQ = 1.0, so non-basic","LQ = 1.0, so basic","LQ = 5, so basic","LQ = 0, so non-basic"],"5 ÷ 5 = 1.0, and LQ ≤ 1 is non-basic."],
+["lq","Goose Bay (her slide): an industry is 10% of local jobs and 5% of national jobs. What is the LQ?",["2.0, so basic","0.5, so non-basic","2.0, so non-basic","15, so basic"],"10 ÷ 5 = 2.0, and LQ > 1 is basic."],
+["lq","Katz and Bordt (2003): an LQ above what value is \"initial evidence of specialization\"?",["1.25","1.0","2.0","0.75"],"Katz and Bordt use LQ > 1.25 as initial evidence of specialization."],
+["lq","Katz and Bordt: what do LQs assume?",["Uniform local consumption and labour productivity","That all manufacturing is basic","That exports are surveyed directly","That small and large cities have the same LQs"],"LQs assume uniform local consumption and productivity, and on their own they can't identify clusters."],
+["lq","Katz and Bordt: small cities have the most extreme LQs (e.g., Saint John air transport 27.09). What does this make them?",["Vulnerable to shocks","Immune to recessions","Highly diversified","Non-basic"],"Extreme specialization makes small cities vulnerable. Large cities have lower LQs (Montréal pharmaceuticals 3.00)."],
+["lq","Crone et al.: under the LQ approach, the economic base is made up of industries that reflect…",["Local specialization","National averages","Government ownership","Retail demand"],"If the county's share is greater than the national share, the sector is part of the base. This is arguably better for growth because specialization reflects comparative advantage."],
+
+// ---------- ASSUMPTION METHOD ----------
+["assume","What is the key assumption of the assumption method?",["Certain industries are assumed to be entirely basic; all others are non-basic","Industries are split by their LQ","Every firm is surveyed for exports","All industries are partly basic"],"\"Certain industries are assumed to be entirely basic … All other industries are classified as non-basic.\""],
+["assume","True or false: the assumption method splits an industry into basic and non-basic portions.",TF,"False. That is the LQ method. The assumption method is all-or-nothing."],
+["assume","Which industries are typically assumed to be basic?",["Agriculture, mining, manufacturing, tourist-oriented","Retail, education, health care","Local government, utilities, banking","Restaurants, personal services, real estate"],"These are export-oriented: high-volume production and/or bringing in outside revenues."],
+["assume","What is the main ADVANTAGE of the assumption method?",["It is simple and fast, with no costly surveys","It is the most precise method","It splits industries accurately","It captures non-traditional exporters"],"\"A simple and fast method.\""],
+["assume","What is a key LIMIT of the assumption method?",["It is crude: entire industries are classified as basic or non-basic","It takes too long","It requires firm surveys","It only works for large cities"],"\"Crude\": no partial split. Memory hook: \"all-or-nothing, fast but crude.\""],
+["assume","Crone, Haynes and Reyna: the traditional assumption approach missed…",["Non-traditional exporting sectors, many of them growth industries","Manufacturing","Agriculture","Mining"],"The LQ approach caught the non-traditional exporters that the assumption approach missed."],
+["assume","For the same city, her slides gave an assumption-method multiplier of 2.26. What did the LQ method give?",["2.88","2.26","1.26","3.00"],"The multipliers differ (2.26 vs. 2.88). That difference is one of the limits."],
+["assume","Why do both the assumption and LQ methods rely on indirect measures (jobs, income)?",["Surveys of exports are difficult and costly","Exports cannot exist at the local level","Jobs data is illegal to collect","Governments forbid surveys"],"Crone et al.: export surveys are \"difficult and costly.\""],
+["assume","Crone et al. also call the assumption method the…",["\"Assumption (or assignment) approach\"","\"Location quotient approach\"","\"Shift-share approach\"","\"Survey approach\""],"Selected industries are assigned to the base, often \"all manufacturing and agriculture.\""],
+["assume","Compared with the assumption method, the LQ method is…",["Less crude, but still not as precise as surveying firms","Cruder and faster","Exactly as precise as surveys","Only used for agriculture"],"LQ is \"less crude\" but \"not as precise as surveying firms\" (surveys are costly and time-consuming)."],
+
+// ---------- SHIFT-SHARE ----------
+["shift","What is the shift term formula?",["s = r − R (regional growth rate − national growth rate)","s = R − r","s = r ÷ R","s = (1 + R) × e"],"TRAP: it is regional minus national."],
+["shift","An industry grows 8% regionally (r) and 5% nationally (R). What is s?",["+3%","−3%","+13%","1.6"],"s = 8% − 5% = +3%."],
+["shift","Which is the shift-share projection formula?",["e′ = (1 + R + s) × e","e′ = (1 + R) × e","e′ = (R − s) × e","e′ = e ÷ (1 + s)"],"Shift-share adds the shift term to the national rate. Constant-share uses (1 + R) only."],
+["shift","Which is the constant-share projection formula?",["e′ = (1 + R) × e","e′ = (1 + R + s) × e","e′ = (1 + r − R) × e","e′ = s × e"],"Constant-share assumes the regional share stays constant, so the region grows at the national rate."],
+["shift","Construction: R = 7%, s = −1%, e = 2,500. What is the shift-share projection?",["2,650","2,675","2,475","2,700"],"(1 + 0.07 − 0.01) × 2,500 = 1.06 × 2,500 = 2,650."],
+["shift","Construction: R = 7%, e = 2,500. What is the constant-share projection?",["2,675","2,650","2,500","2,525"],"1.07 × 2,500 = 2,675."],
+["shift","e = 4,000, R = 6%, s = +2%. What is the shift-share projection?",["4,320","4,240","4,080","4,160"],"1.08 × 4,000 = 4,320."],
+["shift","e = 3,000, R = 12%, s = +3%. What is the shift-share projection?",["3,450","3,360","3,090","3,270"],"(1 + 0.12 + 0.03) × 3,000 = 1.15 × 3,000 = 3,450. Constant-share would give 3,360."],
+["shift","e = 5,000, R = 4%, s = −6%. What is the shift-share projection?",["4,900","5,200","5,500","4,700"],"(1 + 0.04 − 0.06) × 5,000 = 0.98 × 5,000 = 4,900. Jobs are shifting out of the region."],
+["shift","A regional industry grew from 2,000 to 2,300 jobs while the national industry grew 10%. What is s?",["+5%","+15%","−5%","+300"],"r = (2,300 − 2,000) ÷ 2,000 = 15%. s = 15% − 10% = +5%."],
+["shift","Regional health care grew 9% and national health care grew 6%. What is s?",["+0.03 (a regional advantage)","−0.03","0.15","1.5"],"0.09 − 0.06 = +0.03."],
+["shift","What does a NEGATIVE shift term mean?",["The regional industry is growing slower than the nation's, so jobs shift out of the region","The region is growing faster than the nation","The national industry is shrinking","The industry is basic"],"−s means growing slower than the nation, so jobs \"shift out of the region.\""],
+["shift","What does the shift-share method assume?",["The shift term stays constant: a regional advantage or disadvantage persists","The regional share stays constant","The national rate equals zero","The region's industries are all basic"],"Klosterman calls it the \"constant shift term.\""],
+["shift","What does the constant-share method assume?",["The regional share of the industry stays constant","The shift term stays constant","Regional growth always exceeds national growth","There is no national growth"],"Constant-share means the region keeps its share, so it grows at the national rate R."],
+["shift","What does the shift term represent?",["The difference between an industry's regional and national growth rates","The national growth rate","The number of base jobs","The base multiplier minus 1"],"It \"adjusts national industry growth rates for regional performance.\""],
+["shift","Since the future regional growth rate is unknown, how is s calculated?",["Using recently observed regional and national growth rates","From LQs","From firm surveys","It is set to zero"],"s is \"calculated using recently observed regional and national growth rates.\""],
+["shift","Klosterman: which assumption of shift-share is QUESTIONABLE?",["That the regional advantage persists into the future","That regions grow faster or slower because of comparative advantage","That growth rates can be calculated","That national data exists"],"Assumption 2 is questionable: past growth can bid up input prices or build agglomeration economies."],
+["shift","Klosterman: how are shift-share and constant-share justified?",["Pragmatically: simple, cheap, fine for quick short-run 'baseline' projections","On strong theoretical grounds","As the most accurate long-run models","Because they use firm surveys"],"Neither is justified on theory, but both are pragmatic."],
+["shift","In the notation, \"t – t′\" means…",["A range of years (e.g., 2025–2035), not a subtraction","Total minus trade","Time minus taxes","A subtraction of two years"],"\"Not a subtraction but a range of years.\""],
+["shift","In e′ = (1 + R + s) × e, what is e′?",["Projected regional employment in the future year","Current national employment","Current regional employment","The national growth rate"],"e = regional employment now; e′ = projected regional employment."],
+
+// ---------- TRC #92 ----------
+["trc","TRC Call to Action #92 calls on the corporate sector to commit to what before proceeding with economic development projects?",["Meaningful consultation, building respectful relationships, and obtaining the free, prior, and informed consent of Indigenous peoples","Paying royalties to the federal government","Completing an environmental assessment only","Hiring quotas set by the province"],"Word for word. Memory hook C-R-C: Consultation · Relationships · Consent (FPIC)."],
+["trc","Who is TRC Action #92 aimed at?",["The corporate sector","Municipal governments","Churches","Universities"],"#92 is the call to action for business and reconciliation."],
+["trc","True or false: under #92, consent is obtained after projects start.",TF,"False. Consent comes \"before proceeding with economic development projects.\""],
+["trc","In #92, FPIC stands for…",["Free, prior, and informed consent","Fair, public, and independent consultation","Federal, provincial, Indigenous co-management","Full payment in compensation"],"Free, prior, and informed consent of Indigenous peoples."],
+["trc","#92 asks the corporate sector to adopt which document as a reconciliation framework?",["The United Nations Declaration on the Rights of Indigenous Peoples","The Indian Act","The Public Lands Act of 1853","NAFTA"],"Adopt UNDRIP as a reconciliation framework."],
+["trc","How many calls to action were in the TRC's 2015 final report?",["94","92","100","12"],"The TRC ran 2008–2015 and its final report had 94 calls to action."],
+["trc","Besides consent, #92 also asks for…",["Equitable access to jobs, training and education, plus staff education on the history of Aboriginal peoples","Tax cuts for resource firms","Land write-downs for Indigenous communities","Relocating communities closer to markets"],"Also \"long-term sustainable benefits.\""],
+["trc","Which word belongs in the blank? \"Commit to meaningful ______, building respectful relationships…\"",["consultation","compensation","competition","consolidation"],"\"Meaningful consultation.\""],
+
+// ---------- SUPPLY-SIDE & LYNCH ----------
+["supply","Supply-side strategies aim to stimulate…",["Production (investment by businesses)","Consumption","Imports","Population growth"],"Supply-side = production. Demand-side = consumption."],
+["supply","What is the premise of supply-side strategies?",["If offered reduced costs, businesses will relocate (or expand, or form)","If wages rise, consumers will spend more","Public services attract firms","Exports are exogenous"],"Word for word from her slides."],
+["supply","When was the heyday of supply-side strategies?",["1940s–1970s","1880s–1910s","2000s–2020s","1990s only"],"Heyday 1940s–1970s."],
+["supply","Supply-side strategies have their origins in…",["Industrial location theory (Weber)","Staples theory (Innis)","Keynesian demand theory","The Brundtland Report"],"\"Origins in industrial location theory (recall Weber).\" Both focus on cutting costs."],
+["supply","Supply-side strategies focus on attracting businesses (industrial recruitment) by…",["Reducing the costs of doing business","Raising consumer incomes","Building universities","Restricting imports"],"\"Attracting businesses … by reducing the costs of doing business.\""],
+["supply","Is rezoning a general or a selective policy?",["General (applies to all firms)","Selective","Neither","Demand-side"],"General policies apply to all firms: rezoning, corporate tax cuts."],
+["supply","A special economic zone or \"tax credits linked to salaries (multimedia in QC)\" is an example of…",["A selective policy","A general policy","A demand-side policy","A leakage"],"Selective policies target specific firms or areas."],
+["supply","What is an industrial revenue bond?",["A low-interest loan to buy land, a facility or equipment, financed by an investor and issued by a city or state government","A tax on industrial revenue","A grant from the federal government","A reduction in the book value of land"],"It targets primary input costs."],
+["supply","What is a land write-down?",["A reduction in the nominal (book) value of land below its market value","A low-interest loan to buy land","Rezoning land for industry","A tax on vacant land"],"It helps a company acquire or improve land."],
+["supply","What did the Cavite Economic Zone offer firms?",["No taxes or duties on goods imported and re-exported, no local taxes, and low wages, benefits and protections","Higher wages to attract skilled workers","Free public transit","Land write-downs only"],"Cavite: no taxes on foreign profits, no local taxes, low wages, benefits and protections."],
+["supply","Gaspésie–Maritime is an example of…",["A tax credit to offset wage expenses","An industrial revenue bond","A land write-down","A demand-side strategy"],"\"A tax credit to offset wage expenses.\""],
+["supply","Which location factor do \"most supply-side policies\" target?",["Processing costs (taxes, regulations)","Context factors (geography)","Market access","Public services"],"Factors: Processing · Primary inputs · Market access · Public services · Context (\"Please Pay More Public Cash\")."],
+["supply","Industrial revenue bonds and land write-downs target which location factor?",["Primary input costs (land, labour, energy, capital)","Processing costs","Context factors","Market access"],"Primary inputs = land, labour, energy, capital."],
+["supply","Which location factor is described as \"hard to change\"?",["Context factors (geography)","Processing costs","Primary input costs","Public services"],"Context factors such as geography are \"hard to change.\""],
+["supply","What is the \"minus-sum effect\" of supply-side incentives?",["Foregone tax revenues, since firms would probably have come anyway","Firms leave after incentives expire","Wages fall to zero","Public services improve"],"Limits = S-S-M-R: Secondary · Short-lived · Minus-sum · Race to the bottom."],
+["supply","Why are supply-side incentives \"short-lived\"?",["A neighbouring town can match the incentives; tax policies are not a place-based advantage","They expire by law after one year","Firms always go bankrupt","They are unconstitutional"],"Any town can copy a tax cut, so the advantage disappears."],
+["supply","What is the \"race to the bottom\"?",["Competition through cost-cutting that can degrade the quality of work and/or life","Competing to build the best public services","A decline in housing prices","A demand-side strategy"],"Also on her terms list."],
+["supply","Lynch (2004): taxes are a…",["Secondary consideration for business location","Primary consideration for business location","Irrelevant factor","The largest business cost"],"Taxes are a \"secondary consideration.\""],
+["supply","Lynch: about what share of business costs are state and local taxes?",["About 1.2% (0.8% after federal deductibility)","About 20%","About 50%","About 12%"],"Taxes are small. Labour is 20% or more."],
+["supply","Lynch's argument on taxes and economic development:",["Tax increases, if used to fund improved public services, can promote economic development and job creation","Tax cuts are the best way to attract firms","Taxes have no effect on public services","Taxes should be replaced by tolls"],"\"Tax increases used to enhance public services can be the best way to spur the economy.\""],
+["supply","Lynch: which factors matter MORE to firms than taxes?",["Skilled labour pool, market access, transportation and infrastructure, public services","Low corporate taxes only","Land write-downs","Weak regulations"],"\"These require public investment.\""],
+["supply","Lynch: each job \"created\" by tax cuts costs about how much per year in lost revenue?",["$39,000–$78,000","$1,000–$2,000","$500,000","$5,000–$8,000"],"Public-sector layoffs likely exceed the private jobs gained."],
+["supply","Lynch: low-tax, poor-service places tend to attract…",["Low-wage firms","High-tech firms","Research universities","Head offices"],"Without public services, firms pay privately for training, health, security and infrastructure."],
+["supply","According to Lynch, public investment usually ranks where among officials' choices?",["A distant third option, after tax cuts and incentives","First choice","It is never considered","Second, after tax cuts"],"Officials reach first for tax cuts and incentives."],
+["supply","Which is NOT one of the limitations of supply-side strategies (S-S-M-R)?",["They improve public services","Taxes are a secondary consideration","Short-lived","Race to the bottom"],"S-S-M-R: Secondary · Short-lived · Minus-sum · Race to the bottom."],
+["supply","Supply-side cuts bring \"little gain relative to the…\"",["loss","profit","investment","population"],"Lynch: supply-side cuts bring \"little gain relative to the loss.\""],
+
+// ---------- STAPLES ----------
+["staples","Who developed staples theory (1920s)?",["Harold Innis","Alfred Weber","Douglass North","Mel Watkins"],"Innis, 1920s."],
+["staples","Staples theory: Canada's economic development has been fundamentally shaped by…",["The exploitation and export of 'staples'","Manufacturing for the domestic market","Tourism","Financial services"],"Assumption #1."],
+["staples","In staples theory, a \"staple\" is…",["The main commodity produced by a region","Any manufactured good","A government subsidy","A local service"],"For example fur, fish, timber, wheat or oil."],
+["staples","Which staple is associated with Central Canada?",["Fur","Wheat","Fish and timber","Tar sands"],"Fish and timber (Atlantic) · Fur (Central) · Wheat (Prairies) · today the Alberta tar sands."],
+["staples","Which staple is associated with the Prairies?",["Wheat","Fur","Fish","Timber"],"Wheat = Prairies."],
+["staples","Fish and timber are associated with…",["Atlantic Canada","The Prairies","Central Canada","Alberta"],"Fish and timber = Atlantic Canada."],
+["staples","A present-day example of a Canadian staple:",["The Alberta tar sands","Software","Banking","Film production"],"Today: the Alberta tar sands."],
+["staples","Timber industry: saws made locally are an example of a…",["Backward linkage","Forward linkage","Final demand linkage","Leakage"],"Backward = inputs INTO the staple produced locally."],
+["staples","Timber industry: a local furniture maker using the timber is a…",["Forward linkage","Backward linkage","Final demand linkage","Leakage"],"Forward = outputs become inputs to other local industries."],
+["staples","Timber workers buying local housing, food and plaid jackets is a…",["Final demand linkage","Backward linkage","Forward linkage","Staples trap"],"Final demand = workers' consumption needs met locally."],
+["staples","Who named the \"staples trap\"?",["Watkins (1963)","Innis (1920s)","Hirschman (1965)","McCann (1982)"],"Watkins 1963."],
+["staples","Who is associated with linkage effects promoting investment and diversification?",["Hirschman (1965)","Watkins (1977)","Lynch (2004)","Brundtland (1987)"],"Assumption #4: staples \"can promote … investment and diversification by creating linkage effects\" (Hirschman 1965)."],
+["staples","Lamb's definition of the staples trap:",["An over-concentration of resources devoted to the export sector and a reluctance to promote domestic development","A shortage of raw materials","Too much diversification","A tax on staple exports"],"Escaping it needs \"a capacity to transform.\""],
+["staples","Staples theory: the nature of the staple shapes patterns of…",["Transportation, settlement, government, culture, and ideology","Only wages","Only prices","Only immigration"],"Assumption #2."],
+["staples","Which describes the staples cycle?",["Investment in export industries → new transportation financed through debt → debts repaid by exporting more staples","Exports → diversification → convergence","Tax cuts → relocation → growth","Immigration → services → growth"],"This is a cycle of dependency."],
+["staples","Economic drawback: demand is dictated by volatile external markets, causing…",["'Boom and bust' cycles","Convergence","Stable growth","Agglomeration"],"Drawbacks hook B-L-T + F-R + D-S."],
+["staples","In the staples critique, \"leakage\" refers to…",["Profits flowing to foreign companies","Oil spills","Water shortages","Migration to cities"],"Economic pillar: \"profits often flow to foreign companies ('leakage').\""],
+["staples","Which is a NATION-BUILDING drawback of staples development?",["Foreign control, and regional specializations that reinforce regional identities","Too much domestic processing","Over-diversification","Strong manufacturing base"],"\"Regional specializations reinforce regional identities, governance, and fortunes.\""],
+["staples","SOCIAL critique: what is central to Canada's resource-driven economy?",["Land, and dispossessing Indigenous peoples of land","Immigration","Tourism","Manufacturing"],"Lands must be \"legally secured for exploitation\" (contrast with TRC #92's consent)."],
+["staples","ENVIRONMENTAL critique: land is treated as merely a…",["\"Standing reserve\": a stock of raw materials","Sacred space","Public park","Market"],"This goes against intergenerational equity."],
+["staples","The environmental critique of staples development goes against…",["Intergenerational equity","Comparative advantage","Agglomeration","The multiplier"],"Treating land as a standing reserve compromises future generations."],
+["staples","Lamb's shortcoming: why doesn't a resource base necessarily lead to an industrial complex?",["Firms don't diversify and foreign owners take their profits back home","There are too many local suppliers","Taxes are too low","Workers refuse to move"],"Watkins 1977. Also, exports get \"little or no further processing\" (Loxley 1986)."],
+["staples","Filion: in the \"staples phase,\" transportation, institutions and settlements were driven by…",["An exogenous demand for commodities","Local consumer demand","Immigration","Service activities"],"Debt for canals and railways helped lead to Confederation."],
+["staples","Staples theory can create specialized regional economies dependent on…",["Foreign markets","Local markets","Government grants","Tourism"],"Assumption #3."],
+["staples","Lamb: staples theory explains development as…",["A process of diversification around an export base","A process of import substitution","Purely government-led","Tax-driven"],"Its core idea is the export sector's spread effects through linkages (Watkins 1963)."],
+["staples","The critical analysis for sustainable development uses which three pillars?",["Social, economic, environmental","Political, cultural, legal","Land, labour, capital","Local, regional, national"],"S-E-E (Brundtland). Her slides add nation-building."],
+
+// ---------- COLONIZATION ROAD ----------
+["road","What is the key theme of the film Colonization Road?",["Land, and dispossessing Indigenous peoples of land, is central to Canada's resource-driven economy","Roads boost tourism","Agglomeration benefits small towns","Tax cuts attract firms"],"\"To support the staples economy, lands and resources must be legally secured for exploitation.\""],
+["road","How was Shoal Lake 40 impacted?",["It was cut off by a canal onto an artificial island to supply Winnipeg's drinking water, and lived under a boil-water advisory for almost two decades with no road access","It was flooded for a hydro dam for Toronto","It was relocated for a mine","It gained a highway to Kenora"],"The Winnipeg aqueduct was built in the 1910s."],
+["road","Who benefited from the Shoal Lake 40 project?",["The City of Winnipeg (its drinking water)","The community of Shoal Lake 40","The federal mining sector","Kenora's tourism industry"],"Winnipeg's 1913 report called the lake \"uninhabited, with the exception of a few Indians.\""],
+["road","Colonization roads came from which law?",["The Public Lands Act of 1853","The Indian Act of 1876","NAFTA","The BNA Act of 1867"],"It opened First Nations land for \"Canadian settlement.\""],
+["road","Where does host Ryan McMahon start the film?",["Fort Frances","Winnipeg","Toronto","Kenora"],"Fort Frances' main street is called Colonization Road."],
+["road","Kenora is described as…",["A settler town on Anishinaabe land with its own Colonization Road","An Indigenous reserve on an island","A Prairie wheat town","The heartland's capital"],"Add your class notes on Kenora."],
+["road","Who directed Colonization Road (2016)?",["Michelle St. John","Ryan McMahon","Harold Innis","Mel Watkins"],"Directed by Michelle St. John; Ryan McMahon is the host."],
+["road","How does Colonization Road link to staples theory?",["The staples economy required lands and resources to be legally secured for exploitation","Roads created final demand linkages only","It shows agglomeration economies","It shows the multiplier effect"],"This is the social pillar of the staples critique."],
+
+// ---------- AGGLOMERATION ----------
+["agg","Agglomeration economies are…",["External economies of scale (from connections with other firms)","Internal economies of scale","Diseconomies of scale","Government subsidies"],"External = they \"originate outside a firm.\" Internal economies of scale originate within a firm."],
+["agg","A button supplier serving several apparel makers is an example of which agglomeration economy?",["Localization (shared inputs)","Urbanization","Internal economies of scale","Diseconomies"],"Localization = Like firms → Shared inputs, Specialized labour, Knowledge spillovers (SSK)."],
+["agg","Roads, electricity and fibre-optic networks are an example of…",["Urbanization economies (shared inputs)","Localization economies","Diseconomies of scale","Internal economies"],"Urbanization = Unlike firms → Shared inputs, Diversified labour, Exposure (SDE)."],
+["agg","Localization economies come from firms…",["In the same industry","Of many diverse industries","Within a single firm","In rural areas"],"Localization = like firms."],
+["agg","Urbanization economies come from…",["Many diverse firms","Firms in the same industry","A single large firm","Government"],"Urbanization = unlike firms."],
+["agg","Knowledge spillovers (sharing of ideas) among firms in one industry are a benefit of…",["Localization","Urbanization","Diseconomies","Internal economies of scale"],"SSK: Shared inputs · Specialized labour pool · Knowledge spillovers."],
+["agg","A diversified labour pool (e.g., a graphic designer usable by many kinds of firms) is a benefit of…",["Urbanization","Localization","Weber's labour index","Leakage"],"SDE: Shared inputs · Diversified labour · Exposure to different ways of doing things."],
+["agg","A specialized labour pool (e.g., financial workers) is a benefit of…",["Localization","Urbanization","Diseconomies","Supply-side policy"],"SSK."],
+["agg","Which is an example of diseconomies of scale?",["Increased rents, traffic congestion, higher wages","Shared inputs","Knowledge spillovers","Diversified labour pool"],"\"As output increases, cost per unit increases.\""],
+["agg","Agglomeration economies can…",["Shift the least-cost location for a firm","Never affect location","Only matter for agriculture","Increase transport costs only"],"\"Can shift the least-cost location for a firm.\""],
+["agg","Coe et al.: in Weber, agglomeration acts as a \"deviational\" pull, but only where…",["The firms' critical isodapanes overlap","Labour is unionized","Markets are international","Taxes are lowest"],"Coe et al. call this part of Weber \"simplistic and mechanistic.\""],
+["agg","Filion: economies of agglomeration have always disproportionately benefited…",["Large urban areas","Small towns","Rural hinterlands","Resource towns"],"Specialized labour pools, amenities and linkage networks are part of why big cities grow."],
+
+// ---------- ECONOMIC BASE THEORY ----------
+["base","Economic base theory is associated with…",["Alexander (1954) and North (1955)","Innis (1920s)","Weber (1909)","Lynch (2004)"],"A \"theory of trade and regional growth,\" rooted in Innis's staples thesis."],
+["base","In economic base theory, the basic (\"export\") sector's final market is…",["Non-local (it brings in revenues from outside)","Local","Government","Unknown"],"Basic = non-local final market."],
+["base","In economic base theory, the non-basic sector's final market is…",["Local (it supports basic industries)","Non-local","International only","Federal government"],"Non-basic = local final market."],
+["base","True or false: in economic base theory, demand for exports is within the region's control.",TF,"False. Export demand is EXOGENOUS: outside the region's control."],
+["base","According to economic base theory, total economic activity is driven by…",["Export activity","Local consumption","Government spending","Immigration"],"Growth chain E-E-E-C-C: Exports drive → Exogenous demand → Economies + linkages → Cost advantage → Convergence."],
+["base","North's assumption: diversification is _____ and leads to _____ between regions.",["Inevitable; convergence","Impossible; divergence","Optional; dependency","Harmful; polarization"],"\"Diversification is inevitable and ultimately leads to convergence between regions.\""],
+["base","How does economic base theory DIFFER from staples theory?",["Base theory expects diversification and convergence; staples theory warns of the staples trap and dependency","Base theory ignores exports","Staples theory ignores linkages","They are identical"],"Same: export-led growth and linkages. Different: the outcome."],
+["base","Economic base theory divides the regional economy into how many sectors?",["Two: basic and non-basic","Three: primary, secondary, tertiary","Four","One"],"\"Divides the regional economy into two sectors.\""],
+["base","Exports create which of the following, according to North?",["External economies of scale, linkage effects, and economic diversification","Leakage and dependency","Diseconomies of scale","Lower wages"],"Assumption 3 in the growth chain."],
+["base","Lamb's risk in economic base development:",["New regions depend on imported capital, so dependence grows instead of diversification","Too much local ownership","Exports become endogenous","Leakage disappears"],"Outside investors back the proven staple."],
+["base","Lamb: cyclical sensitivity of an export base depends on…",["The export's income elasticity (milk vs. wine)","Its location quotient","The shift term","The number of firms"],"Luxury goods like wine are more cyclical than staples like milk."],
+["base","Economic base theory: regions with a comparative advantage in production and transportation…",["Develop exportable commodities","Import most goods","Avoid trade","Grow only through tourism"],"North (1955)."],
+
+// ---------- HEARTLAND-HINTERLAND ----------
+["hh","Who is associated with Canada's heartland–hinterland model?",["McCann (1982)","Filion (2010)","Innis (1920s)","North (1955)"],"McCann views the shift to manufacturing as central to economic development."],
+["hh","The hinterland is dominated by…",["Natural resource extraction","Manufacturing and high-order services","Finance and research","Tourism"],"Hinterland = more sparsely populated; it supplies raw materials and markets."],
+["hh","The heartland is dominated by…",["Industrial activities (manufacturing) plus high-order activities (finance, research, administration)","Natural resource extraction","Agriculture only","Fishing"],"Heartland = densely populated, produces manufactured goods, and exerts influence over the rest of the country."],
+["hh","Which region supplies raw materials and markets for manufactured goods?",["Hinterland","Heartland","Both equally","Neither"],"The hinterland supplies; the heartland produces."],
+["hh","Where is Canada's heartland on Filion's map?",["The Québec City–Windsor corridor","The Prairies","Atlantic Canada","British Columbia's coast"],"Québec City–Windsor corridor."],
+["hh","McCann stresses what relationship between the two regions?",["Interdependencies","Complete independence","Equal population","Identical economies"],"\"Interdependencies between the two regions.\""],
+["hh","According to Filion (2010), what is REPLACING the heartland–hinterland divide?",["A divide between large, growing cities and smaller, declining cities","A divide between east and west","A divide between provinces and territories","A divide between rich and poor provinces"],"Old divide = Factories vs. Resources. New divide = Big vs. Small cities."],
+["hh","According to Filion, what are the key drivers of the new divide?",["Immigration and service activities","Manufacturing and mining","Agriculture and fishing","Tax cuts and subsidies"],"I-S = Immigration + Services."],
+["hh","Filion's three trend categories (his title):",["Economic, policy, and demographic","Social, economic, environmental","Land, labour, capital","Local, regional, national"],"E-P-D: Economy, Policy, Demography."],
+["hh","Filion's POLICY driver:",["A sharp shift from interventionism to neoliberalism (FTA/NAFTA, erosion of regional development programs)","More regional development programs","Nationalization of industry","New tariffs"],"\"An erosion of regional economic development and redistributive programs.\""],
+["hh","Filion's DEMOGRAPHIC driver:",["Birth rates below replacement, so immigrants are the main factor of population growth (~70% settle in the 3 largest metros)","A baby boom in rural areas","Emigration from cities","Rising rural birth rates"],"Immigrants are \"the main, and soon only, factor of population expansion.\""],
+["hh","Filion's ECONOMIC driver:",["Globalization hurt manufacturing; the growing service sector favours large urban areas through agglomeration","Manufacturing boomed in small towns","Resource prices stabilized","Agriculture expanded"],"High-order services cluster in big cities."],
+["hh","Since the 1970s, according to Filion, the hinterland has largely…",["\"Caught up\"","Collapsed","Overtaken the heartland in manufacturing","Disappeared"],"1971–1986 the hinterland grew faster; afterwards the two converged."],
+["hh","Filion: the result of the new divide is…",["Polarization: \"growth abets growth\" (Myrdal)","Convergence of all cities","A hinterland revival","Equal growth everywhere"],"It is not a hinterland revival: commodity cycles are \"jarring\" and resource extraction creates few jobs."],
+["hh","Which region is \"more sparsely populated, but [has] some large cities\"?",["Hinterland","Heartland","Both","Neither"],"The heartland is densely populated with large urban areas."],
+
+// ---------- TERMS ----------
+["terms","Economic growth is…",["An increase in the value of goods and services produced in a given period, measured by GDP","Improved well-being and empowerment","A more equitable income distribution","Measured by HDI"],"Growth = quantity (GDP). Development = broader well-being."],
+["terms","Economic development is…",["Less agreed on: can mean growth, or more equitable distribution of income, improved well-being, economic and political empowerment","Only an increase in GDP","Only more jobs","Only more businesses"],"Reese and Fasenfest (1997). Measure: HDI."],
+["terms","Which measure is used for economic development (vs. growth)?",["HDI (Human Development Index)","GDP","LQ","The base multiplier"],"GDP measures growth; HDI measures development."],
+["terms","Comparative advantage means producing a good at…",["A lower opportunity cost than trading partners","Higher efficiency than all trading partners","The lowest wage","The highest price"],"Ricardo (1817). Not the same as absolute advantage (\"more efficiently\")."],
+["terms","Ricardo's example: Portugal has the absolute advantage in both goods. Its comparative advantage is in…",["Wine","Cloth","Both","Neither"],"Comparative = lower opportunity cost."],
+["terms","Absolute advantage means producing a good…",["More efficiently than trading partners","At a lower opportunity cost","With more subsidies","Closer to the market"],"Common trap: comparative = lower opportunity cost; absolute = more efficient."],
+["terms","Economic definition of the urban:",["Primarily non-agricultural activities; functional integration of activities","The area over which a municipal corporation exercises political authority","Any place with over 1,000 people","Land zoned for housing"],"Economic urban = functional."],
+["terms","Political definition of the urban:",["The area over which a municipal corporation exercises political authority","Functional integration of non-agricultural activities","The commuter shed","The heartland"],"Political urban = municipal authority."],
+["terms","Sustainable development (Brundtland 1987):",["Meets the needs of the present without compromising the ability of future generations to meet their own needs","Maximizes GDP growth","Develops staples for export","Cuts business taxes"],"Three pillars: social, economic, environmental (S-E-E) + intergenerational equity."],
+["terms","What are the three pillars of sustainable development?",["Social, economic, environmental","Land, labour, capital","Heartland, hinterland, city","Basic, non-basic, total"],"S-E-E."],
+["terms","Leakage refers to…",["Income that leaves a region","Income that enters a region","Base jobs","Population loss"],"I-O-R-M. Leakage reduces the multiplier."],
+["terms","Diseconomies of scale:",["As output increases, cost per unit increases","As output increases, cost per unit decreases","External benefits from other firms","Lower rents"],"Examples: increased rents, traffic congestion, higher wages."],
+["terms","\"Inputs into the staple-exporting industry are produced locally\" defines a…",["Backward linkage","Forward linkage","Final demand linkage","Leakage"],"Backward = inputs. Forward = outputs."],
+["terms","\"Outputs from the staple-exporting industry serve as inputs into other local industries\" defines a…",["Forward linkage","Backward linkage","Final demand linkage","Multiplier effect"],"Timber → furniture."],
+["terms","\"Local consumption needs are met by local industries\" defines a…",["Final demand linkage","Backward linkage","Forward linkage","Comparative advantage"],"Timber workers → housing, food, plaid jackets."],
+["terms","True or false: economic growth and economic development mean the same thing.",TF,"False. Growth = quantity (GDP); development = broader well-being (HDI)."],
+];
+
+// ---------- engine ----------
+const LS = "urbs380-missed-v1";
+const store = {
+  get() { try { return new Set(JSON.parse(localStorage.getItem(LS) || "[]")); } catch { return new Set(); } },
+  set(s) { try { localStorage.setItem(LS, JSON.stringify([...s])); } catch {} },
+};
+let missedSet = store.get();
+const SIZES = [10, 20, 40, "All"];
+let size = 20;
+let selected = new Set(Object.keys(TOPICS));
+let round = null;
+
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const shuffle = (a) => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const countBy = (k) => Q.filter((q) => q[0] === k).length;
+
+function renderSetup() {
+  $("#topics").innerHTML = Object.entries(TOPICS).map(([k, t]) =>
+    `<button class="chip" type="button" data-k="${k}" aria-pressed="${selected.has(k)}"><span class="stars">${"★".repeat(t.stars)}</span>${esc(t.name)} <span class="n">${countBy(k)}</span></button>`).join("");
+  $("#sizes").innerHTML = SIZES.map((s) => `<button class="chip" type="button" data-s="${s}" aria-pressed="${s === size}">${s}</button>`).join("");
+  $("#missedCount").textContent = missedSet.size;
+  $("#startMissed").disabled = missedSet.size === 0;
+  $("#start").disabled = selected.size === 0;
+}
+$("#topics").addEventListener("click", (e) => {
+  const b = e.target.closest("[data-k]"); if (!b) return;
+  const k = b.dataset.k; selected.has(k) ? selected.delete(k) : selected.add(k); renderSetup();
+});
+$("#sizes").addEventListener("click", (e) => {
+  const b = e.target.closest("[data-s]"); if (!b) return;
+  size = b.dataset.s === "All" ? "All" : +b.dataset.s; renderSetup();
+});
+$("#allTopics").onclick = () => { selected = new Set(Object.keys(TOPICS)); renderSetup(); };
+$("#hiTopics").onclick = () => { selected = new Set(Object.keys(TOPICS).filter((k) => TOPICS[k].stars === 3)); renderSetup(); };
+$("#start").onclick = () => startRound(Q.map((_, i) => i).filter((i) => selected.has(Q[i][0])), "Practice round");
+$("#startMissed").onclick = () => startRound([...missedSet].filter((i) => Q[i]), "Missed questions");
+
+function startRound(pool, label) {
+  let ids = shuffle(pool);
+  if (size !== "All") ids = ids.slice(0, size);
+  if (!ids.length) return;
+  round = { ids, pos: 0, right: 0, wrong: [], label, answered: false };
+  renderQ();
+  $("#quiz").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function renderQ() {
+  const id = round.ids[round.pos];
+  const [topic, text, opts, expl] = Q[id];
+  const isTF = opts === TF;
+  const order = isTF ? (opts[0] === "True" ? [0, 1] : [1, 0]) : shuffle([0, 1, 2, 3].slice(0, opts.length));
+  // For TF, correct answer is stored in the explanation's first word.
+  const tfCorrect = isTF ? (expl.startsWith("True") ? "True" : "False") : null;
+  round.cur = { id, order, isTF, tfCorrect };
+  const choices = isTF ? ["True", "False"] : order.map((i) => opts[i]);
+  const pct = (round.pos / round.ids.length) * 100;
+  $("#quiz").innerHTML = `
+    <div class="meta">
+      <span class="tag">${esc(TOPICS[topic].name)}</span>
+      <span>${esc(round.label)} · ${round.pos + 1} / ${round.ids.length}</span>
+    </div>
+    <div class="bar"><i style="width:${pct}%"></i></div>
+    <h2 class="q">${esc(text)}</h2>
+    <div class="opts" role="group" aria-label="Answer choices">
+      ${choices.map((c, i) => `<button class="opt" type="button" data-i="${i}"><span class="k">${"ABCD"[i]}</span><span>${esc(c)}</span></button>`).join("")}
+    </div>
+    <div id="fbslot"></div>
+    <div class="actions">
+      <div class="score"><span class="g">✓ ${round.right}</span><span class="r">✗ ${round.wrong.length}</span></div>
+      <span class="hint">Press 1–${choices.length} to answer</span>
+    </div>`;
+  round.answered = false;
+  round.choices = choices;
+  $("#quiz").querySelectorAll(".opt").forEach((b) => (b.onclick = () => answer(+b.dataset.i)));
+}
+
+function correctIndex() {
+  const c = round.cur;
+  if (c.isTF) return round.choices.indexOf(c.tfCorrect);
+  return c.order.indexOf(0);
+}
+
+function answer(i) {
+  if (round.answered) return;
+  round.answered = true;
+  const ci = correctIndex();
+  const ok = i === ci;
+  const id = round.cur.id;
+  if (ok) { round.right++; missedSet.delete(id); } else { round.wrong.push(id); missedSet.add(id); }
+  store.set(missedSet);
+  $("#quiz").querySelectorAll(".opt").forEach((b, j) => {
+    b.disabled = true;
+    if (j === ci) b.classList.add("right");
+    else if (j === i) b.classList.add("wrong");
+    else b.classList.add("dim");
+  });
+  const last = round.pos === round.ids.length - 1;
+  $("#fbslot").innerHTML = `
+    <div class="fb ${ok ? "" : "no"}">
+      <b>${ok ? "Correct" : "Not quite. Answer: " + esc(round.choices[ci])}</b>
+      <p>${esc(Q[id][3])}</p>
+    </div>`;
+  const act = $("#quiz .actions");
+  act.querySelector(".hint").outerHTML = `<button class="btn" id="next" type="button">${last ? "See results" : "Next question"}</button>`;
+  $("#next").onclick = next;
+  $("#next").focus({ preventScroll: true });
+  $("#missedCount").textContent = missedSet.size;
+  $("#startMissed").disabled = missedSet.size === 0;
+}
+
+function next() {
+  if (!round.answered) return;
+  if (round.pos < round.ids.length - 1) { round.pos++; renderQ(); }
+  else renderDone();
+}
+
+function renderDone() {
+  const n = round.ids.length, pct = Math.round((round.right / n) * 100);
+  const byTopic = {};
+  round.ids.forEach((id) => { const t = Q[id][0]; byTopic[t] ??= { n: 0, r: 0 }; byTopic[t].n++; });
+  round.ids.forEach((id) => { if (!round.wrong.includes(id)) byTopic[Q[id][0]].r++; });
+  const rows = Object.entries(byTopic).sort((a, b) => a[1].r / a[1].n - b[1].r / b[1].n).map(([t, v]) => {
+    const p = Math.round((v.r / v.n) * 100);
+    return `<tr><td>${esc(TOPICS[t].name)}</td><td class="num">${v.r} / ${v.n}</td><td><span class="pill ${p >= 80 ? "ok" : "weak"}">${p}%</span></td></tr>`;
+  }).join("");
+  const missed = round.wrong.map((id) => {
+    const q = Q[id];
+    const ans = q[2] === TF ? (q[3].startsWith("True") ? "True" : "False") : q[2][0];
+    return `<li><span>${esc(q[1])}</span><span class="a">${esc(ans)}</span><span class="e">${esc(q[3])}</span></li>`;
+  }).join("");
+  $("#quiz").innerHTML = `
+    <div class="done" style="display:grid;gap:16px">
+      <div class="meta"><span class="tag">Round complete</span><span>${esc(round.label)}</span></div>
+      <div style="display:flex;gap:16px;align-items:baseline;flex-wrap:wrap">
+        <span class="big">${pct}%</span><span>${round.right} of ${n} correct</span>
+      </div>
+      <div class="tbl-wrap"><table><thead><tr><th>Topic (weakest first)</th><th>Score</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>
+      <div class="row">
+        ${round.wrong.length ? `<button class="btn" id="retry" type="button">Retry the ${round.wrong.length} I missed</button>` : ""}
+        <button class="btn ${round.wrong.length ? "ghost" : ""}" id="again" type="button">New round</button>
+      </div>
+      ${missed ? `<h3 style="margin:0;font-family:var(--font-display)">Review what you missed</h3><ul class="missed-list">${missed}</ul>` : `<p style="margin:0">Perfect round. Try ★★★ topics with "All" questions next.</p>`}
+    </div>`;
+  const r = $("#retry"); if (r) r.onclick = () => { const w = round.wrong.slice(); const s = size; size = "All"; startRound(w, "Retry missed"); size = s; };
+  $("#again").onclick = () => $("#start").click();
+}
+
+document.addEventListener("keydown", (e) => {
+  if (!round || e.metaKey || e.ctrlKey || e.altKey) return;
+  if (e.target.closest && e.target.closest("summary")) return;
+  const k = e.key.toLowerCase();
+  const map = { "1": 0, "2": 1, "3": 2, "4": 3, a: 0, b: 1, c: 2, d: 3 };
+  if (!round.answered && k in map && round.choices && map[k] < round.choices.length && $("#quiz .opt")) { answer(map[k]); e.preventDefault(); }
+  else if (round.answered && (k === "enter" || k === "arrowright") && $("#next")) { next(); e.preventDefault(); }
+});
+
+renderSetup();
+startRound(Q.map((_, i) => i), "Practice round");
+window.scrollTo(0, 0);
+</script>
