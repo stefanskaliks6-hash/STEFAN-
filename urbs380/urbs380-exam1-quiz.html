@@ -108,6 +108,26 @@ td.num { font-variant-numeric: tabular-nums; font-family: var(--font-mono); whit
 .opts.multi .opt .k { border-radius: 4px; }
 .opt.missed { border-color: var(--good); border-style: dashed; }
 .opt.missed .k { border-color: var(--good); color: var(--good); }
+.tabs { display: flex; gap: 4px; flex-wrap: wrap; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 4px; }
+.tab { font: inherit; font-weight: 600; font-size: 14px; flex: 1 1 auto; border: 0; border-radius: 7px; padding: 9px 12px; background: transparent; color: var(--muted); cursor: pointer; }
+.tab[aria-selected="true"] { background: var(--accent); color: var(--accent-ink); }
+section.setup { display: grid; gap: 10px; }
+.fields { display: grid; gap: 10px; }
+.field { display: grid; grid-template-columns: 1fr minmax(0, 10rem) 5.5rem; gap: 10px; align-items: center; font-size: 15px; }
+.field.col { grid-template-columns: 1fr; }
+.field input, .field textarea { font: inherit; font-family: var(--font-mono); padding: 9px 10px; border-radius: 6px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); width: 100%; min-width: 0; }
+.field textarea { font-family: var(--font-body); resize: vertical; line-height: 1.5; }
+.mark { font-style: normal; font-family: var(--font-mono); font-size: 13px; }
+.mark.ok { color: var(--good); } .mark.no { color: var(--bad); }
+@media (max-width: 520px) { .field { grid-template-columns: 1fr 5rem; } .field > span { grid-column: 1 / -1; } }
+.steps { margin: 4px 0 0; padding-left: 20px; display: grid; gap: 6px; }
+.wlist { display: grid; gap: 8px; }
+.witem { font: inherit; display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: center; text-align: left; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--ink); cursor: pointer; }
+.witem:hover { border-color: var(--accent); }
+.witem .n { font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
+.pts { list-style: none; margin: 6px 0 0; padding: 0; display: grid; gap: 6px; }
+.pts label { display: grid; grid-template-columns: auto 1fr; gap: 8px; align-items: start; cursor: pointer; }
+.pts input { margin-top: 4px; accent-color: var(--accent); }
 footer { color: var(--muted); font-size: 12px; text-align: center; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
@@ -116,10 +136,16 @@ footer { color: var(--muted); font-size: 12px; text-align: center; }
   <header>
     <div class="eyebrow">URBS 380 · Test 1 · Wed Oct 7</div>
     <h1>Exam 1 Drill</h1>
-    <p class="sub">Built from your study guide. Hard mode uses multi-step calculations, applied scenarios and select-all questions, with wrong answers taken from common mistakes. Missed questions come back until you get them right.</p>
+    <p class="sub">Matches the exam format: multiple choice, true/false, calculations, short answers and a short essay. Built from your study guide. Hard mode uses multi-step calculations, applied scenarios and select-all questions, with wrong answers taken from common mistakes. Missed questions come back until you get them right.</p>
   </header>
 
-  <details class="setup" id="setup" open>
+  <nav class="tabs" role="tablist" aria-label="Practice mode">
+    <button class="tab" id="tab-mc" role="tab" type="button" aria-selected="true">Multiple choice &amp; T/F</button>
+    <button class="tab" id="tab-calc" role="tab" type="button" aria-selected="false">Calculations</button>
+    <button class="tab" id="tab-written" role="tab" type="button" aria-selected="false">Short answers &amp; essays</button>
+  </nav>
+
+  <details class="setup" id="setup" data-mode-section="mc" open>
     <summary>Choose difficulty, topics and round size</summary>
     <div class="row">
       <div class="label">Topics (★★★ = most likely on the exam)</div>
@@ -146,9 +172,21 @@ footer { color: var(--muted); font-size: 12px; text-align: center; }
     </div>
   </details>
 
-  <section class="card" id="quiz" aria-live="polite"></section>
+  <section class="card" id="quiz" data-mode-section="mc" aria-live="polite"></section>
 
-  <footer>Keys: number or letter keys to answer (or toggle on select-all), Enter to check and go to the next question. Your missed list is saved in this browser only.</footer>
+  <section class="setup" data-mode-section="calc" hidden>
+    <div class="label">Problem type</div>
+    <div class="row" id="cTypes"></div>
+  </section>
+  <section class="card" id="calc" data-mode-section="calc" aria-live="polite" hidden></section>
+
+  <section class="setup" data-mode-section="written" hidden>
+    <p class="sub" style="margin:0">The exam's short answers, short explanations and essay. Write your answer first, then tick the marking points (from your study guide) that you covered. Essays: aim for one paragraph per point.</p>
+    <div class="wlist" id="wList"></div>
+  </section>
+  <section class="card" id="wCard" data-mode-section="written" hidden></section>
+
+  <footer>Multiple choice keys: number or letter keys to answer (or toggle on select-all), Enter to check and go to the next question. Your missed list is saved in this browser only.</footer>
 </div>
 
 <script>
@@ -706,6 +744,323 @@ document.addEventListener("keydown", (e) => {
     else if (round.answered && $("#next")) { next(); e.preventDefault(); }
   }
 });
+
+
+// ---------- MODES ----------
+const MODES = ["mc", "calc", "written"];
+function setMode(m) {
+  MODES.forEach((k) => {
+    document.querySelectorAll(`[data-mode-section="${k}"]`).forEach((el) => (el.hidden = k !== m));
+    $(`#tab-${k}`).setAttribute("aria-selected", k === m);
+  });
+  if (m === "calc" && !calc) newCalc();
+  if (m === "written" && !$("#wList").children.length) renderWrittenList();
+}
+MODES.forEach((k) => ($(`#tab-${k}`).onclick = () => setMode(k)));
+// Multiple-choice shortcuts only apply on the multiple-choice tab.
+document.addEventListener("keydown", (e) => { if ($("#quiz").hidden) e.stopImmediatePropagation(); }, true);
+
+// ---------- CALCULATIONS (random numbers every time) ----------
+const rint = (a, b, step = 1) => a + step * Math.floor(Math.random() * (Math.floor((b - a) / step) + 1));
+const fmt = (n, d = 0) => Number(n).toLocaleString("en-US", { minimumFractionDigits: d, maximumFractionDigits: d });
+const r2 = (n) => Math.round(n * 100) / 100;
+const pickOne = (a) => a[Math.floor(Math.random() * a.length)];
+function parseNum(s) {
+  s = String(s).trim().replace(/[,\s$]/g, "").replace(/[−–]/g, "-").replace(/%$/, "");
+  if (s === "" || isNaN(+s)) return null;
+  return +s;
+}
+const BASIC = ["Agriculture", "Mining", "Manufacturing", "Tourism"];
+const NONBASIC = ["Retail trade", "Health care", "Education", "Finance", "Construction", "Public administration"];
+
+const CALC_TYPES = {
+  table: { name: "Complete a table: base multiplier", make() {
+    const rows = shuffle([...shuffle(BASIC).slice(0, 3).map((n) => [n, "B"]), ...shuffle(NONBASIC).slice(0, rint(3, 4)).map((n) => [n, "NB"])])
+      .map(([n, t]) => [n, t, rint(8, 90) * 100]);
+    const base = rows.filter((r) => r[1] === "B").reduce((a, r) => a + r[2], 0);
+    const total = rows.reduce((a, r) => a + r[2], 0);
+    const m = total / base;
+    return {
+      prompt: `Use the <b>assumption method</b> (agriculture, mining, manufacturing and tourism are basic). Complete the table, then find the base multiplier and the multiplier effect.`,
+      table: `<table><thead><tr><th>Industry</th><th>Jobs</th><th>B / NB</th><th>Base</th><th>Non-base</th></tr></thead><tbody>${rows.map((r) => `<tr><td>${r[0]}</td><td class="num">${fmt(r[2])}</td><td>?</td><td>?</td><td>?</td></tr>`).join("")}<tr><td><b>Total</b></td><td class="num"><b>${fmt(total)}</b></td><td></td><td>?</td><td>?</td></tr></tbody></table>`,
+      fields: [
+        { label: "Total base jobs", ans: base, tol: 0.5 },
+        { label: "Base multiplier (2 decimals)", ans: r2(m), tol: 0.011 },
+        { label: "Multiplier effect (2 decimals)", ans: r2(m - 1), tol: 0.011 },
+      ],
+      steps: [`Basic: ${rows.filter((r) => r[1] === "B").map((r) => `${r[0]} ${fmt(r[2])}`).join(" + ")} = <b>${fmt(base)}</b>. Non-base = ${fmt(total)} − ${fmt(base)} = ${fmt(total - base)}.`,
+        `Base multiplier = total ÷ base = ${fmt(total)} ÷ ${fmt(base)} = <b>${fmt(m, 2)}</b>.`,
+        `Multiplier effect = ${fmt(m, 2)} − 1 = <b>${fmt(m - 1, 2)}</b> (or ${fmt(total - base)} ÷ ${fmt(base)}). For each base job, about ${fmt(m - 1, 2)} non-base jobs exist.`],
+    };
+  } },
+  project: { name: "Project impacts of new base jobs", make() {
+    const m = rint(16, 34) / 10, n = rint(2, 20) * 50, closing = Math.random() < 0.35;
+    const tot = n * m, nb = n * (m - 1);
+    return {
+      prompt: closing
+        ? `A region's base multiplier is <b>${fmt(m, 1)}</b>. A plant with <b>${fmt(n)}</b> base jobs closes. Project the job losses.`
+        : `A region's base multiplier is <b>${fmt(m, 1)}</b>. A new firm brings <b>${fmt(n)}</b> new base jobs. Project the impact.`,
+      fields: [
+        { label: closing ? "Total jobs lost" : "Total new jobs", ans: Math.round(tot), tol: 1 },
+        { label: closing ? "Non-base jobs lost" : "New non-base jobs", ans: Math.round(nb), tol: 1 },
+      ],
+      steps: [`Total = base jobs × base multiplier = ${fmt(n)} × ${fmt(m, 1)} = <b>${fmt(tot)}</b>. This includes the ${fmt(n)} base jobs themselves.`,
+        `Non-base = ${fmt(n)} × (${fmt(m, 1)} − 1) = <b>${fmt(nb)}</b> (= ${fmt(tot)} − ${fmt(n)}).`],
+    };
+  } },
+  reverse: { name: "Work backwards from the multiplier", make() {
+    const base = rint(20, 90) * 100, eff = rint(5, 25) / 10, nb = Math.round(base * eff), tot = base + nb;
+    const v = pickOne(["fromTotal", "fromNonbase"]);
+    return v === "fromTotal" ? {
+      prompt: `Total employment is <b>${fmt(tot)}</b> and the base multiplier is <b>${fmt(1 + eff, 1)}</b>.`,
+      fields: [{ label: "Base jobs", ans: base, tol: 1 }, { label: "Non-base jobs", ans: nb, tol: 1 }],
+      steps: [`Base = total ÷ multiplier = ${fmt(tot)} ÷ ${fmt(1 + eff, 1)} = <b>${fmt(base)}</b>.`, `Non-base = ${fmt(tot)} − ${fmt(base)} = <b>${fmt(nb)}</b>.`],
+    } : {
+      prompt: `The multiplier <b>effect</b> is <b>${fmt(eff, 1)}</b> and there are <b>${fmt(nb)}</b> non-base jobs.`,
+      fields: [{ label: "Base jobs", ans: base, tol: 1 }, { label: "Total employment", ans: tot, tol: 1 }, { label: "Base multiplier", ans: 1 + eff, tol: 0.011 }],
+      steps: [`Effect = non-base ÷ base, so base = ${fmt(nb)} ÷ ${fmt(eff, 1)} = <b>${fmt(base)}</b>.`, `Total = ${fmt(base)} + ${fmt(nb)} = <b>${fmt(tot)}</b>.`, `Base multiplier = effect + 1 = <b>${fmt(1 + eff, 1)}</b>.`],
+    };
+  } },
+  lq: { name: "Location quotient: classify and split", make() {
+    const region = rint(20, 150) * 1000, ei = rint(6, 60) * 100;
+    const local = (ei / region) * 100;
+    let nat = Math.random() < 0.15 ? Math.round(local * 10) / 10 : Math.max(0.5, Math.round((local / (rint(5, 35) / 10)) * 10) / 10);
+    const localR = Math.round(local * 10) / 10;
+    const lq = localR / nat, lqR = r2(lq);
+    const nonbase = lqR > 1 ? ei / lqR : ei, base = lqR > 1 ? ei - nonbase : 0;
+    return {
+      prompt: `An industry has <b>${fmt(ei)}</b> of the region's <b>${fmt(region)}</b> jobs. Nationally, the industry is <b>${fmt(nat, 1)}%</b> of all jobs. (Round the local share to 1 decimal.)`,
+      fields: [
+        { label: "LQ (2 decimals)", ans: lqR, tol: 0.021 },
+        { label: "Base jobs (0 if non-basic)", ans: Math.round(base), tol: Math.max(5, base * 0.01) },
+      ],
+      steps: [`Local share = ${fmt(ei)} ÷ ${fmt(region)} = ${fmt(localR, 1)}%. LQ = ${fmt(localR, 1)} ÷ ${fmt(nat, 1)} = <b>${fmt(lqR, 2)}</b>.`,
+        lqR > 1 ? `LQ > 1, so the industry is <b>basic</b>, but only the excess. Non-base = (1 ÷ ${fmt(lqR, 2)}) × ${fmt(ei)} ≈ ${fmt(nonbase)}. Base = ${fmt(ei)} − ${fmt(nonbase)} ≈ <b>${fmt(base)}</b>.`
+          : `LQ ≤ 1${lqR === 1 ? " (exactly 1 is the trap)" : ""}, so the industry is <b>non-basic</b>: base jobs = <b>0</b>.`],
+    };
+  } },
+  shift: { name: "Shift term and projections", make() {
+    const start = rint(10, 60) * 100, r = rint(-6, 20), Rp = rint(-4, 12), Rf = rint(-3, 10);
+    const end = Math.round(start * (1 + r / 100)), s = r - Rp;
+    const ss = end * (1 + Rf / 100 + s / 100), cs = end * (1 + Rf / 100);
+    return {
+      prompt: `Over the past period the regional industry went from <b>${fmt(start)}</b> to <b>${fmt(end)}</b> jobs, while the national industry grew <b>${Rp}%</b>. The national industry is projected to grow <b>${Rf}%</b> next period. Use e = ${fmt(end)}.`,
+      fields: [
+        { label: "Regional growth rate r (%)", ans: r, tol: 0.05, pct: true },
+        { label: "Shift term s (%)", ans: s, tol: 0.05, pct: true },
+        { label: "Shift-share projection e′", ans: Math.round(ss), tol: 1 },
+        { label: "Constant-share projection e′", ans: Math.round(cs), tol: 1 },
+      ],
+      steps: [`r = (${fmt(end)} − ${fmt(start)}) ÷ ${fmt(start)} = <b>${r}%</b>.`,
+        `s = r − R = ${r}% − (${Rp}%) = <b>${s > 0 ? "+" : ""}${s}%</b>${s < 0 ? ": the region is growing slower than the nation, so jobs shift out" : s > 0 ? ": a regional advantage" : ""}.`,
+        `Shift-share: (1 + ${fmt(Rf / 100, 2)} + ${fmt(s / 100, 2)}) × ${fmt(end)} = ${fmt(1 + Rf / 100 + s / 100, 2)} × ${fmt(end)} = <b>${fmt(ss)}</b>.`,
+        `Constant-share: (1 + ${fmt(Rf / 100, 2)}) × ${fmt(end)} = <b>${fmt(cs)}</b>.`],
+    };
+  } },
+};
+let calcType = "all", calc = null, calcScore = { r: 0, n: 0 };
+function renderCalcTypes() {
+  $("#cTypes").innerHTML = [["all", "All types"], ...Object.entries(CALC_TYPES).map(([k, v]) => [k, v.name])]
+    .map(([k, n]) => `<button class="chip" type="button" data-c="${k}" aria-pressed="${k === calcType}">${n}</button>`).join("");
+}
+$("#cTypes").addEventListener("click", (e) => { const b = e.target.closest("[data-c]"); if (!b) return; calcType = b.dataset.c; renderCalcTypes(); newCalc(); });
+function newCalc() {
+  const k = calcType === "all" ? pickOne(Object.keys(CALC_TYPES)) : calcType;
+  calc = { k, ...CALC_TYPES[k].make(), done: false };
+  $("#calc").innerHTML = `
+    <div class="meta"><span class="tags"><span class="tag">${esc(CALC_TYPES[k].name)}</span><span class="tag multi">New numbers every time</span></span>
+      <span class="score"><span class="g">✓ ${calcScore.r}</span><span>of ${calcScore.n} problems</span></span></div>
+    <p class="q" style="font-weight:600">${calc.prompt}</p>
+    ${calc.table ? `<div class="tbl-wrap">${calc.table}</div>` : ""}
+    <form id="cForm" class="fields" autocomplete="off">
+      ${calc.fields.map((f, i) => `<label class="field" for="cf${i}"><span>${f.label}</span><input id="cf${i}" inputmode="decimal" type="text"><em class="mark" id="cm${i}"></em></label>`).join("")}
+      <div class="actions"><button class="btn" type="submit">Check answers</button><button class="btn ghost" type="button" id="cSkip">New problem</button></div>
+    </form>
+    <div id="cSol"></div>`;
+  $("#cForm").onsubmit = (e) => { e.preventDefault(); checkCalc(); };
+  $("#cSkip").onclick = newCalc;
+  $("#cf0").focus({ preventScroll: true });
+}
+function checkCalc() {
+  let all = true;
+  calc.fields.forEach((f, i) => {
+    let v = parseNum($(`#cf${i}`).value);
+    if (v !== null && f.pct && Math.abs(v) < 1 && Math.abs(f.ans) >= 1) v *= 100;
+    const ok = v !== null && Math.abs(v - f.ans) <= f.tol;
+    all = all && ok;
+    const m = $(`#cm${i}`);
+    m.className = "mark " + (ok ? "ok" : "no");
+    m.textContent = ok ? "✓" : `✗ ${f.pct ? f.ans + "%" : fmt(f.ans, Number.isInteger(f.ans) ? 0 : 2)}`;
+  });
+  if (!calc.done) { calc.done = true; calcScore.n++; if (all) calcScore.r++; }
+  $("#cSol").innerHTML = `<div class="fb ${all ? "" : "no"}"><b>${all ? "All correct" : "Worked solution"}</b><ol class="steps">${calc.steps.map((s) => `<li>${s}</li>`).join("")}</ol></div>`;
+  const sk = $("#cSkip"); sk.textContent = "Next problem"; sk.className = "btn"; sk.focus({ preventScroll: true });
+}
+
+// ---------- WRITTEN ANSWERS (self-marked against the guide) ----------
+const WRITTEN = [
+  { kind: "Short essay", t: "Staples theory: critical analysis", q: "Provide a critical analysis of the key limitations and drawbacks of staples theory as an approach to sustainable economic development in Canada. Include its key assumptions and examples of staples.", pts: [
+    "Thesis: staples explain Canada's development but are unsustainable on all three pillars",
+    "Innis (1920s): development shaped by exploiting and exporting staples, the region's main commodity",
+    "Staples shape transportation, settlement, government, culture and ideology; regions depend on foreign markets",
+    "Examples: fish and timber (Atlantic), fur (Central Canada), wheat (Prairies), Alberta tar sands today",
+    "Linkages (Hirschman 1965): backward, forward, final demand, with an example",
+    "Economic: boom and bust from volatile external markets",
+    "Economic: leakage, with profits flowing to foreign companies",
+    "Economic: the staples trap (Watkins 1963), a cycle of debt and dependency",
+    "Nation-building: foreign control; regional specializations reinforce regional identities",
+    "Social: dispossession of Indigenous peoples; land legally secured for exploitation (Colonization Road; contrast TRC #92)",
+    "Environmental: land as a 'standing reserve', which goes against intergenerational equity",
+    "Conclusion tying back to sustainable development (Brundtland; social, economic, environmental)",
+  ] },
+  { kind: "Short essay", t: "Supply-side strategies and Lynch", q: "Explain supply-side strategies: their premise, key examples and limitations. Then explain Lynch's argument about tax increases and economic development.", pts: [
+    "Aims to stimulate production (business investment), not consumption; heyday 1940s–1970s; origins in Weber",
+    "Premise: if offered reduced costs, businesses will relocate (or expand, or form)",
+    "General policies (rezoning, corporate tax cuts) vs. selective (special zones, salary tax credits)",
+    "A named example: Cavite Economic Zone, Gaspésie–Maritime, industrial revenue bond or land write-down (defined)",
+    "Location factors: processing costs, primary inputs, market access, public services, context",
+    "Limit: taxes are a secondary consideration",
+    "Limit: short-lived, because a neighbouring town can match incentives",
+    "Limit: minus-sum, with tax revenue lost on firms that would have come anyway",
+    "Limit: race to the bottom, where cost-cutting degrades the quality of work and life",
+    "Lynch: taxes are a small share of costs (~1.2%, 0.8% after deductibility); labour is 20%+",
+    "Lynch: skilled labour, market access, infrastructure and public services matter more and need public investment",
+    "Lynch: tax increases used to fund improved public services can promote development; cuts cost $39k–$78k per job",
+  ] },
+  { kind: "Short essay", t: "Heartland–hinterland and Filion", q: "Describe Canada's heartland–hinterland model. According to Filion (2010), what is replacing this divide, and what are its key drivers?", pts: [
+    "McCann (1982): interdependent heartland and hinterland; manufacturing central to development",
+    "Heartland: industrial plus high-order activities, densely populated, produces manufactured goods, exerts influence",
+    "Heartland location: Québec City–Windsor corridor",
+    "Hinterland: natural resource extraction, more sparsely populated, supplies raw materials and markets",
+    "Since the 1970s the hinterland has 'caught up' (grew faster 1971–1986, then converged)",
+    "New divide: large, growing cities vs. smaller, declining cities",
+    "Drivers: immigration and service activities",
+    "Economic: globalization hurt manufacturing; services favour big cities through agglomeration",
+    "Demographic: birth rates below replacement, so immigrants (~70% to the 3 largest metros) drive growth",
+    "Policy: shift from interventionism to neoliberalism (FTA/NAFTA, fewer regional programs)",
+    "Not a hinterland revival: polarization, 'growth abets growth' (Myrdal)",
+  ] },
+  { kind: "Short explanation", t: "Assumption method", q: "What is the key assumption of the assumption method for assigning industries? Give its advantages and limits.", pts: [
+    "Key assumption: certain industries (agriculture, mining, manufacturing, tourism) are entirely basic; all others non-basic",
+    "Advantage: simple and fast, no costly surveys",
+    "Advantage: basic industries are export-oriented (high-volume production, outside revenue)",
+    "Limit: crude, because whole industries are all basic or all non-basic",
+    "Limit: misses non-traditional exporting sectors (Crone et al.)",
+    "Limit: the multiplier differs from the LQ method's (2.26 vs. 2.88)",
+  ] },
+  { kind: "Short explanation", t: "Shift term", q: "State the shift-term formula and explain what it represents.", pts: [
+    "s = r − R (regional growth rate minus national growth rate of the industry)",
+    "Represents the difference between the industry's regional and national growth rates",
+    "Adjusts national growth rates for regional performance",
+    "+s = regional advantage; −s = slower growth, so jobs shift out of the region",
+    "Calculated from recently observed rates; shift-share assumes s stays constant",
+    "Formula e′ = (1 + R + s) × e, with constant-share e′ = (1 + R) × e for comparison",
+  ] },
+  { kind: "Short explanation", t: "Base multiplier: what it represents", q: "Give the formulas for the base multiplier and multiplier effect, and explain what each number represents. How do you use it to project impacts?", pts: [
+    "Base multiplier = total employment ÷ base employment",
+    "Represents total local activity supported by base activity (counts the base job itself)",
+    "Multiplier effect = multiplier − 1 = non-base ÷ base",
+    "Represents the number of non-base jobs per base job",
+    "Why it works: base workers' income is spent and re-spent locally",
+    "Projection: new base jobs × multiplier = total new jobs; assumes the structure doesn't change",
+  ] },
+  { kind: "Short explanation", t: "Leakage and the multiplier", q: "What is leakage, and how does it relate to the multiplier?", pts: [
+    "Leakage = income that leaves a region",
+    "Sources: imports, outside owners' profits, remittances, migratory labour",
+    "Leakage reduces the multiplier",
+    "Example: $1 of exports re-spent locally totals only ~$1.66",
+  ] },
+  { kind: "Short explanation", t: "Location quotients", q: "If given location quotients, how do you tell base from non-base industries? Explain the calculation for splitting a basic industry.", pts: [
+    "LQ = local % ÷ national %",
+    "LQ ≤ 1 (including exactly 1) means non-basic; all jobs are non-base",
+    "LQ > 1 means basic: producing more than needed locally and exporting",
+    "Only the excess is base: non-base = (1 ÷ LQ) × jobs; base = jobs − non-base",
+  ] },
+  { kind: "Short answer", t: "TRC Action #92", q: "Action #92 of the TRC calls on the corporate sector to commit to what before proceeding with economic development projects?", pts: [
+    "Meaningful consultation",
+    "Building respectful relationships",
+    "Obtaining the free, prior, and informed consent of Indigenous peoples",
+    "BEFORE proceeding with economic development projects",
+  ] },
+  { kind: "Short answer", t: "Colonization Road", q: "What is the key theme of Colonization Road, and how were towns such as Kenora and Shoal Lake 40 impacted by settler colonial projects?", pts: [
+    "Theme: land, and dispossessing Indigenous peoples of land, is central to Canada's resource-driven economy",
+    "Lands and resources had to be legally secured for exploitation (Public Lands Act 1853)",
+    "Shoal Lake 40: cut off on an artificial island to supply Winnipeg's water (1910s aqueduct)",
+    "Shoal Lake 40: boil-water advisory for almost two decades, no road access",
+    "Kenora: a settler town on Anishinaabe land with its own Colonization Road",
+  ] },
+  { kind: "Short explanation", t: "Agglomeration economies", q: "Name the different kinds of agglomeration economies and their associated benefits.", pts: [
+    "External economies of scale: from connections with other firms",
+    "Localization: firms in the same industry",
+    "Localization benefits: shared inputs, specialized labour pool, knowledge spillovers",
+    "Urbanization: many diverse firms",
+    "Urbanization benefits: shared inputs (infrastructure), diversified labour pool, exposure to different ways of doing things",
+  ] },
+  { kind: "Short explanation", t: "Economic base theory", q: "What does economic base theory assume about how the economy is organized and how it grows?", pts: [
+    "Alexander (1954), North (1955); rooted in Innis's staples thesis",
+    "Two sectors: basic (final market non-local) and non-basic (final market local)",
+    "Growth driven by export activity",
+    "Demand for exports is exogenous",
+    "Exports create external economies, linkages and diversification, leading to cost advantages",
+    "Diversification is inevitable and leads to convergence between regions",
+  ] },
+  { kind: "Short explanation", t: "Early location theory", q: "List the key assumptions of the early version of location theory.", pts: [
+    "Weber (1909): least-cost model, minimizing transport costs (ton-miles)",
+    "Perfect information: firms act in a perfectly rational, economistic way",
+    "Single points in space: raw materials, markets and labour",
+    "Transport costs emphasized",
+    "Isotropic plane: a featureless surface",
+  ] },
+  { kind: "Short answer", t: "Terms: development vs. growth; urban", q: "Distinguish economic growth from economic development, and the economic definition of the urban from the political one.", pts: [
+    "Growth: increase in the value of goods and services, measured by GDP",
+    "Development: broader (equity, well-being, empowerment), measured by HDI",
+    "Economic urban: primarily non-agricultural activities, functionally integrated",
+    "Political urban: area over which a municipal corporation exercises political authority",
+  ] },
+  { kind: "Short answer", t: "Terms: sustainable development, race to the bottom, IRB, land write-down", q: "Define sustainable development (and its pillars), race to the bottom, industrial revenue bond and land write-down.", pts: [
+    "Sustainable development: meets present needs without compromising future generations (Brundtland 1987)",
+    "Pillars: social, economic, environmental",
+    "Race to the bottom: cost-cutting competition that degrades quality of work and/or life",
+    "IRB: low-interest loan for land, facility or equipment; financed by an investor, issued by a city or state",
+    "Land write-down: reducing land's book value below market value",
+  ] },
+];
+const WKEY = "urbs380-written-v1";
+const wload = () => { try { return JSON.parse(localStorage.getItem(WKEY) || "{}"); } catch { return {}; } };
+const wsave = (d) => { try { localStorage.setItem(WKEY, JSON.stringify(d)); } catch {} };
+let wdata = wload();
+function renderWrittenList() {
+  $("#wList").innerHTML = WRITTEN.map((w, i) => {
+    const s = wdata[i]?.score;
+    return `<button class="witem" type="button" data-w="${i}"><span class="tag ${w.kind === "Short essay" ? "hard" : ""}">${w.kind}</span><span>${esc(w.t)}</span><span class="n">${s ? `${s[0]}/${s[1]}` : ""}</span></button>`;
+  }).join("");
+}
+$("#wList").addEventListener("click", (e) => { const b = e.target.closest("[data-w]"); if (b) openWritten(+b.dataset.w); });
+function openWritten(i) {
+  const w = WRITTEN[i];
+  $("#wCard").hidden = false;
+  $("#wCard").innerHTML = `
+    <div class="meta"><span class="tag ${w.kind === "Short essay" ? "hard" : ""}">${w.kind}</span><span>${w.pts.length} marking points</span></div>
+    <h2 class="q">${esc(w.q)}</h2>
+    <label class="field col" for="wText"><span>Your answer (write it before you look; saved in this browser)</span>
+      <textarea id="wText" rows="${w.kind === "Short essay" ? 12 : 6}"></textarea></label>
+    <div class="actions"><button class="btn" id="wReveal" type="button">Show marking points</button><button class="btn ghost" id="wBack" type="button">Back to list</button></div>
+    <div id="wPts"></div>`;
+  $("#wText").value = wdata[i]?.text || "";
+  $("#wText").oninput = (e) => { wdata[i] = { ...(wdata[i] || {}), text: e.target.value }; wsave(wdata); };
+  $("#wBack").onclick = () => { $("#wCard").hidden = true; renderWrittenList(); $("#wList").scrollIntoView({ block: "nearest" }); };
+  $("#wReveal").onclick = () => {
+    $("#wPts").innerHTML = `<div class="fb"><b>Tick each point your answer covered</b>
+      <ul class="pts">${w.pts.map((p, j) => `<li><label for="wp${j}"><input type="checkbox" id="wp${j}"> <span>${esc(p)}</span></label></li>`).join("")}</ul>
+      <p id="wScore" class="score"></p></div>`;
+    const upd = () => { const n = [...document.querySelectorAll("#wPts input")].filter((c) => c.checked).length;
+      $("#wScore").textContent = `${n} of ${w.pts.length} points`; wdata[i] = { ...(wdata[i] || {}), score: [n, w.pts.length] }; wsave(wdata); };
+    document.querySelectorAll("#wPts input").forEach((c) => (c.onchange = upd)); upd();
+    $("#wReveal").remove();
+  };
+  $("#wCard").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+renderCalcTypes();
 
 renderSetup();
 startRound(pool(), "Hard round");
