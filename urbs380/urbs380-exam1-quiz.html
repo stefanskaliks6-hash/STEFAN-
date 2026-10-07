@@ -102,6 +102,8 @@ td.num { font-variant-numeric: tabular-nums; font-family: var(--font-mono); whit
 .missed-list .e { color: var(--muted); font-size: 14px; }
 .tags { display: flex; gap: 6px; flex-wrap: wrap; }
 .tag.hard { background: var(--bad-soft); color: var(--bad); }
+.tag.exam { background: var(--accent-soft); color: var(--accent); border: 1px solid var(--accent); }
+.seen-row { justify-content: space-between; }
 .tag.multi { background: var(--line); color: var(--ink); }
 .opts.multi .opt[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
 .opts.multi .opt[aria-pressed="true"] .k { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
@@ -136,7 +138,7 @@ footer { color: var(--muted); font-size: 12px; text-align: center; }
   <header>
     <div class="eyebrow">URBS 380 · Test 1 · Wed Oct 7</div>
     <h1>Exam 1 Drill</h1>
-    <p class="sub">Every question is based only on your professor's Exam 1 study guide. Matches the exam format: multiple choice, true/false, calculations, short answers and a short essay. Hard mode uses multi-step calculations, applied scenarios and select-all questions, with wrong answers taken from common mistakes. Missed questions come back until you get them right.</p>
+    <p class="sub">Every question is based only on your professor's Exam 1 study guide. Matches the exam format: multiple choice, true/false, calculations, short answers and a short essay. Exam-style mode asks each study-guide item from new angles, every round mixes in calculation questions with new numbers, and questions you haven't seen come first. Hard mode uses multi-step calculations, applied scenarios and select-all questions, with wrong answers taken from common mistakes. Missed questions come back until you get them right.</p>
   </header>
 
   <nav class="tabs" role="tablist" aria-label="Practice mode">
@@ -170,6 +172,7 @@ footer { color: var(--muted); font-size: 12px; text-align: center; }
       <button class="btn" id="start" type="button">Start new round</button>
       <button class="btn ghost" id="startMissed" type="button">Drill my missed questions (<span id="missedCount">0</span>)</button>
     </div>
+    <div class="row seen-row"><span class="hint" id="unseenInfo"></span><button class="chip" id="resetSeen" type="button">Reset seen questions</button></div>
   </details>
 
   <section class="card" id="quiz" data-mode-section="mc" aria-live="polite"></section>
@@ -508,36 +511,258 @@ const QH = [
 ];
 for (const q of QH) Q.push([...q, "h"]);
 
+// ---------- EXAM-STYLE BANK (new questions, each tied to an item on the professor's study guide) ----------
+const QP = [
+// ----- 1 · Early location theory: key assumptions -----
+["loc","True or false: early location theory assumes firms have perfect information and act in a perfectly rational, economistic way.",TF,"True. This is the 'perfect information' assumption (P in P-S-T-I)."],
+["loc","True or false: early location theory assumes raw materials and markets are spread evenly across the whole region.",TF,"False. It assumes raw materials, markets and cheap labour sit at single points in space."],
+["loc","True or false: early location theory pays close attention to geographic unevenness such as mountains, rivers and coastlines.",TF,"False. It assumes an isotropic plane: a 'featureless surface that overlooks geographic unevenness.'"],
+["loc","In early location theory, the main cost a firm tries to minimize is…",["Transport costs","Labour costs","Tax costs","Land costs"],"Weber's least-cost model emphasizes transport costs. This emphasis is also a limitation, since transport costs have dropped considerably."],
+["loc","Two firms with identical costs choose different sites because their managers know different things about the region. Which assumption does this challenge?",["Perfect information","Single points in space","Isotropic plane","Transport costs emphasized"],"The model assumes every firm has perfect information and decides in a perfectly rational, economistic way."],
+["loc","A critic says the model 'treats the world as a flat, uniform surface.' Which assumption is the critic targeting?",["Isotropic plane","Perfect information","Single points in space","Transport costs emphasized"],"Isotropic plane = a featureless surface that overlooks geographic unevenness."],
+["loc","Which statement criticizes the 'single points in space' assumption?",["Resources, markets and labour are really spread across many places","Firms do not always act in a rational, economistic way","Real landscapes have mountains, rivers and coastlines","Transport is now a small share of most firms' costs"],"Each wrong option criticizes a different assumption: perfect information, isotropic plane, and transport costs."],
+["loc","Why do the assumptions of early location theory become its limitations?",["Real firms and places do not match them: information is imperfect, space is uneven, and transport matters less","The assumptions were only meant to describe firms in the nineteenth century","The assumptions apply to service firms but not to manufacturing firms","The assumptions are correct, but firms ignore them when choosing sites"],"Her slide is titled 'Assumptions and limitations': each assumption simplifies reality in a way that limits the model."],
+
+// ----- 2 · Base multiplier: calculate, complete a table, explain, project -----
+["mult","True or false: the base multiplier counts the base job itself as well as the non-base jobs it supports.",TF,"True. Base multiplier = total ÷ base, so it includes the base job. The multiplier effect (multiplier − 1) counts only non-base jobs."],
+["mult","True or false: if a region's base multiplier is 2.0, each base job supports two non-base jobs.",TF,"False. A multiplier of 2.0 means 2 jobs in total per base job: the base job plus 1 non-base job. The multiplier effect is 1.0."],
+["mult","True or false: the multiplier effect can be found by dividing non-base employment by base employment.",TF,"True. Multiplier effect = non-base ÷ base = base multiplier − 1."],
+["mult","True or false: a base multiplier can never be less than 1.0.",TF,"True. Total employment always includes the base jobs, so total ÷ base is at least 1."],
+["mult","True or false: more leakage raises the multiplier, because money flows to other regions.",TF,"False. Leakage is income that leaves the region and can't be re-spent locally, so leakage reduces the multiplier."],
+["mult","Complete the table: base jobs 3,500; non-base jobs ?; total 9,800. What is the multiplier effect?",["1.80","2.80","0.36","1.56"],"Non-base = 9,800 − 3,500 = 6,300. Effect = 6,300 ÷ 3,500 = 1.80. (2.80 is the base multiplier; 0.36 = base ÷ total; 1.56 = total ÷ non-base.)"],
+["mult","A region has 8,000 base jobs and a base multiplier of 3.0. How many non-base jobs does it have?",["16,000","24,000","8,000","2,667"],"Total = 8,000 × 3.0 = 24,000. Non-base = 24,000 − 8,000 = 16,000 (= 8,000 × 2.0)."],
+["mult","A town's 600-job paper mill (base) closes. The base multiplier is 2.4. Which describes the projected impact?",["1,440 jobs lost in total, 840 of them non-base","1,440 non-base jobs lost, plus the 600 mill jobs","840 jobs lost in total, 240 of them non-base","2,040 jobs lost in total, 1,440 of them non-base"],"Total lost = 600 × 2.4 = 1,440. Non-base lost = 600 × 1.4 = 840. The 1,440 already includes the 600 mill jobs."],
+["mult","Town X (multiplier 1.8) and Town Y (multiplier 2.6) each gain 100 new base jobs. Which is correct?",["Town Y gains 80 more jobs in total than Town X","Town Y gains 160 more non-base jobs than Town X","Both towns gain 100 new non-base jobs","Town X gains more jobs because its multiplier is lower"],"X: 100 × 1.8 = 180. Y: 100 × 2.6 = 260. Difference = 80 (in both total and non-base jobs)."],
+["mult","What does a multiplier effect of 0.8 mean?",["Each base job is associated with 0.8 non-base jobs","Each base job supports 0.8 jobs in total","80% of the region's jobs are base jobs","The region loses jobs when base jobs are added"],"Multiplier effect = non-base ÷ base. The base multiplier here would be 1.8."],
+["mult","A region's base multiplier rose from 2.2 to 2.6 while its base jobs stayed the same. What must have happened?",["Non-base employment grew","Base employment fell","Leakage increased","Exports fell"],"Multiplier = total ÷ base. With base unchanged, a higher multiplier means total (so non-base) employment grew. More leakage would lower it."],
+["mult","What is the correct order of steps for calculating the base multiplier from an industry table?",["Mark each industry B or NB → put its jobs in the base or non-base column → total the columns → divide total by base","Total all jobs → divide by the number of industries → mark each B or NB → subtract the non-base","Divide each industry's jobs by total jobs → mark each B or NB → add up the basic shares","Mark each industry B or NB → put its jobs in a column → total the columns → divide base by total"],"Her Lecture 5 method: classify, assign jobs to columns, total and check base + non-base = total, then total ÷ base."],
+["mult","Which is an example of leakage?",["A local mine's profits are paid to shareholders in another country","A miner buys groceries and clothing at stores in town","A local hardware store supplies tools and parts to the mine","A town restaurant hires local staff to serve the miners"],"Leakage = income that leaves the region (imports, outside owners, remittances, migratory labour)."],
+["mult","Why does leakage reduce the multiplier?",["Money that leaves the region can't be re-spent locally","Leakage turns base jobs into non-base jobs over time","Leakage increases the region's exports, not its imports","Leakage lowers the national growth rate of the industry"],"The multiplier works because base income is spent and re-spent locally. Each leak cuts that chain short."],
+["mult","Which statement correctly uses the multiplier to project impacts?",["A new firm's base jobs × the base multiplier = the total new jobs expected","A new firm's total jobs ÷ the base multiplier = the new base jobs expected","A new firm's base jobs × the multiplier effect = the total new jobs expected","A new firm's non-base jobs × the base multiplier = the total new jobs"],"New base jobs × base multiplier = total. New base jobs × multiplier effect = non-base only."],
+
+// ----- 3 · Shift-term formula and what it represents -----
+["shift","True or false: a shift term of zero means the regional industry grew at the same rate as the national industry.",TF,"True. s = r − R = 0 when r = R."],
+["shift","True or false: the shift term is found by subtracting the regional growth rate from the national growth rate.",TF,"False. s = r − R: regional minus national."],
+["shift","True or false: a positive shift term indicates a regional advantage in that industry.",TF,"True. +s means the region's industry is growing faster than the nation's."],
+["shift","True or false: the shift term 'adjusts national industry growth rates for regional performance.'",TF,"True. That is how her slides describe what the shift term represents."],
+["shift","An industry grew 4% in the region and 7% nationally. What is s, and what does it mean?",["−3%: the region's industry is growing slower than the nation's","+3%: the region's industry is growing faster than the nation's","−3%: the region's industry is growing faster than the nation's","+3%: the region's industry is growing slower than the nation's"],"s = 4% − 7% = −3%. Negative = slower than the nation, so jobs 'shift out of the region.'"],
+["shift","In e′ = (1 + R + s) × e, what does R stand for?",["The projected national growth rate of the industry","The regional growth rate of the industry","Current regional employment in the industry","The shift term for the industry"],"R = national growth rate; r = regional growth rate; s = r − R; e = current regional employment."],
+["shift","Regional manufacturing fell from 5,000 to 4,750 jobs while national manufacturing fell 2%. What is s?",["−3%","−7%","+3%","−5%"],"r = −250 ÷ 5,000 = −5%. s = −5% − (−2%) = −3%."],
+["shift","e = 1,200, R = 10%, s = −4%. What is projected regional employment?",["1,272","1,320","1,368","1,152"],"(1 + 0.10 − 0.04) × 1,200 = 1.06 × 1,200 = 1,272. (1,320 leaves out s; 1,368 adds s with the wrong sign.)"],
+["shift","In one region, retail has s = +2% and mining has s = −5%. Which is correct?",["The region has an advantage in retail and a disadvantage in mining compared with national trends","The region has a disadvantage in retail and an advantage in mining compared with national trends","Both industries must be adding jobs in the region, because s is a growth rate","Mining must be losing jobs in the region, because its shift term is negative"],"s compares regional with national growth. A negative s doesn't prove job losses: it only means slower growth than the nation."],
+["shift","Which piece of information is NOT needed to calculate an industry's shift term?",["Total employment in all of the region's industries","The industry's regional growth rate","The industry's national growth rate","The industry's past regional employment"],"s = r − R. You need the industry's regional rate (from its past employment) and its national rate, nothing about other industries."],
+
+// ----- 4 · Assumption method: key assumption, advantages, limits -----
+["assume","True or false: under the assumption method, all employment in a basic industry is treated as serving export markets.",TF,"True. 'All employment in an industry is devoted to either export or local consumption.'"],
+["assume","True or false: the assumption method requires surveying firms about where their sales go.",TF,"False. That is its advantage: simple and fast, with no costly surveys."],
+["assume","True or false: the assumption method and the LQ method give the same multiplier for the same city.",TF,"False. Her example: assumption method 2.26, LQ method 2.88. 'The multipliers are different' is one of the limits."],
+["assume","Under the assumption method, a region's tourist-oriented hotels are classified as…",["Basic","Non-basic","Partly basic, using their LQ","Excluded from the calculation"],"Agriculture, mining, manufacturing and tourist-oriented industries are assumed to be basic."],
+["assume","Under the assumption method, a supermarket chain's local stores are classified as…",["Non-basic","Basic","Partly basic, using their LQ","Basic, if the chain is large"],"Only the preset industries are basic. All other industries are non-basic."],
+["assume","A manufacturing plant sells 40% of its output locally. Under the assumption method, how many of its 1,000 jobs count as base?",["1,000","600","400","0"],"Manufacturing is assumed entirely basic, so all 1,000 jobs are base, even though 400 jobs' worth of output stays local. This is why the method is 'crude.'"],
+["assume","Why is the assumption method called 'crude'?",["Some workers in 'basic' industries serve local customers, and some in 'non-basic' industries serve outsiders","It uses income instead of jobs, so part-time workers are counted as full base jobs","It relies on surveys of firms, and firms often misreport where they sell","It changes which industries are basic every year, so results can't be compared"],"Entire industries are classified as basic or non-basic, with no partial split."],
+
+// ----- 5 · Location quotients: base vs. non-base -----
+["lq","True or false: an LQ greater than 1 means the region is more specialized in that industry than the nation.",TF,"True. LQ > 1: the local share is larger than the national share, so the region produces more than needed locally and exports."],
+["lq","True or false: if an industry's LQ is 2.0, all of its jobs are base jobs.",TF,"False. Non-base = (1 ÷ 2.0) × jobs = half. Only the other half (the excess) is base."],
+["lq","True or false: an industry with an LQ of 0.95 is classified as non-basic.",TF,"True. LQ ≤ 1 is non-basic."],
+["lq","True or false: compared with the assumption method, the LQ method can split one industry into base and non-base parts.",TF,"True. For LQ > 1, only the excess above local need counts as base."],
+["lq","Which LQ means exactly half of an industry's jobs are base jobs?",["2.0","0.5","1.5","1.0"],"Non-base = jobs ÷ 2.0 = half, so base = the other half."],
+["lq","An industry has an LQ of 4.0. What fraction of its jobs are base jobs?",["Three quarters","One quarter","All of them","None of them"],"Non-base = 1 ÷ 4.0 = 1/4 of jobs. Base = 1 − 1/4 = 3/4."],
+["lq","Select ALL industries that are BASIC: Forestry LQ 3.2 · Retail LQ 0.98 · Health LQ 1.00 · Finance LQ 1.4.",{c:["Forestry (LQ 3.2)","Finance (LQ 1.4)"],w:["Retail (LQ 0.98)","Health (LQ 1.00)"]},"LQ > 1 is basic. 0.98 and exactly 1.00 are non-basic."],
+["lq","An industry is 6% of local jobs and 8% of national jobs. How is it classified?",["LQ 0.75: non-basic","LQ 1.33: basic","LQ 0.75: basic","LQ 1.33: non-basic"],"LQ = local ÷ national = 6 ÷ 8 = 0.75, which is ≤ 1, so non-basic."],
+["lq","How do you find the number of base jobs in a basic industry?",["Base = jobs − (jobs ÷ LQ)","Base = jobs ÷ LQ","Base = jobs × LQ","Base = jobs × (LQ + 1)"],"jobs ÷ LQ = the non-base jobs needed for local demand. Subtract them from total industry jobs to get base."],
+["lq","An industry with an LQ of 1.6 has 800 non-base jobs. How many jobs does it have in total?",["1,280","500","1,300","480"],"Non-base = jobs ÷ LQ, so jobs = 800 × 1.6 = 1,280. Base = 1,280 − 800 = 480."],
+["lq","What does an LQ of exactly 1.0 tell you about a region?",["It is exactly as specialized in the industry as the nation, so the industry is non-basic","It exports all of that industry's output, so the industry is entirely basic","It has the same number of jobs in the industry as the national average city","It is more specialized in the industry than the nation, so the industry is basic"],"'The region and the country are equally specialized.' LQ ≤ 1, including exactly 1, is non-basic."],
+
+// ----- 6 · TRC Action #92 -----
+["trc","True or false: under Action #92, informing Indigenous communities after a project is approved is enough.",TF,"False. #92 requires meaningful consultation, respectful relationships and free, prior and informed consent BEFORE proceeding."],
+["trc","True or false: Action #92 calls for consent that is free, prior and informed.",TF,"True. 'Obtaining the free, prior, and informed consent of Indigenous peoples before proceeding with economic development projects.'"],
+["trc","In 'free, prior, and informed consent', which word means the community must not be pressured or coerced?",["Free","Prior","Informed","Meaningful"],"Free = without pressure. Prior = before proceeding. Informed = with full information."],
+["trc","In 'free, prior, and informed consent', which word means the community must have full information about the project?",["Informed","Free","Prior","Respectful"],"Informed = consent given with full knowledge of the project and its effects."],
+["trc","A company tells a First Nation it will lose funding if it votes against a project. Which part of FPIC does this most directly violate?",["Free","Prior","Informed","None, since a vote was held"],"Consent obtained under a threat is not free."],
+["trc","Fill in the blank: Action #92 calls on the corporate sector to commit to meaningful consultation, building ______ relationships, and obtaining free, prior and informed consent.",["respectful","economic","contractual","temporary"],"'Building respectful relationships.' Memory hook C-R-C: Consultation · Relationships · Consent."],
+
+// ----- 7 · Supply-side strategies and Lynch -----
+["supply","True or false: supply-side strategies aim to stimulate consumption by households.",TF,"False. They aim to stimulate production (business investment). Demand-side strategies aim at consumption."],
+["supply","True or false: corporate tax cuts that apply to all firms are an example of a selective policy.",TF,"False. Policies for all firms are general. Selective policies target specific firms or areas."],
+["supply","True or false: a special economic zone is an example of a selective supply-side policy.",TF,"True. It targets a specific area."],
+["supply","True or false: Lynch argues that taxes are one of the most important factors in a business's location decision.",TF,"False. Lynch says taxes are a small share of business costs and a secondary consideration."],
+["supply","True or false: according to Lynch, cutting taxes to attract business can lead to cuts in the public services that businesses depend on.",TF,"True. Taxes fund services such as a skilled workforce and infrastructure. Cutting them brings 'little gain relative to the loss.'"],
+["supply","A city sells a former rail yard worth $5M to a developer for $2M. Which supply-side tool is this?",["Land write-down","Industrial revenue bond","Tax credit on wages","Rezoning"],"Land write-down = reducing the nominal (book) value of land below its market value."],
+["supply","A state issues a bond, bought by investors, to give a company a low-interest loan for a new plant. Which tool is this?",["Industrial revenue bond","Land write-down","Special economic zone","Corporate tax cut"],"Industrial revenue bond = low-interest loan to buy land, a facility or equipment, financed by an investor and issued by a city or state."],
+["supply","Industrial revenue bonds and land write-downs both lower a firm's cost of…",["Acquiring land, facilities or equipment","Paying wages and benefits to its workers","Paying corporate income and payroll taxes","Shipping goods to markets outside the region"],"Both help a company acquire or improve land and facilities."],
+["supply","Which of these is a supply-side strategy?",["Offering a firm a tax credit to offset its wage expenses","Raising the minimum wage to boost local spending","Giving residents vouchers to spend in local shops","Increasing welfare payments to raise consumption"],"Supply-side = reducing the costs of doing business (e.g., Gaspésie–Maritime's wage tax credit). The others aim at consumption."],
+["supply","City A has low taxes but poor roads and schools. City B has higher taxes, good infrastructure and a skilled workforce. Which would Lynch expect to attract better-paying firms?",["City B","City A","Both equally, since taxes cancel out services","Neither, since taxes don't matter at all"],"Lynch: skilled labour, infrastructure and public services matter more than taxes, and they require public investment."],
+["supply","A firm takes incentives from one town, then moves five years later to a town offering more. Which limitation does this show?",["Short-lived","Minus-sum","Secondary consideration","Race to the bottom"],"Incentives are not a place-based advantage: a neighbouring town can match or beat them."],
+["supply","The race to the bottom mainly harms resident-workers through…",["Lower wages, weaker protections and a lower quality of life","Higher taxes to pay for more public services","Higher land prices and more expensive housing","Stronger unions that push wages above market levels"],"'Competition through cost-cutting that can degrade quality of work and/or life.'"],
+["supply","In the class discussion of public investment, which is a benefit to BUSINESSES rather than to resident-workers?",["A skilled labour pool","Better health care for families","Better schools for workers' children","More transit options for commuters"],"Slide 21: benefits to resident-workers (education, health, transportation) and to businesses (skilled labour pool, infrastructure, market access)."],
+["supply","Which statement best summarizes Lynch's argument?",["Taxes are a small cost for firms, and tax increases that fund better public services can promote development","Taxes are a firm's largest cost, so tax cuts are the most effective way to attract firms and jobs","Taxes have no relationship to public services, so they don't affect development either way","Firms choose locations mainly to avoid regulations, so cutting rules matters more than taxes"],"Lynch: 'tax increases—if used to fund improved public services—can promote economic development and job creation.'"],
+
+// ----- 8 · Staples theory: assumptions, examples, critical analysis -----
+["staples","True or false: staples theory argues that Canada's development was shaped mainly by manufacturing for the domestic market.",TF,"False. It argues development was shaped by the exploitation and export of staples (raw commodities)."],
+["staples","True or false: according to staples theory, the staple being exported shapes patterns of settlement and government.",TF,"True. It shapes transportation, settlement, government, culture and ideology."],
+["staples","True or false: a backward linkage occurs when the staple's outputs are used as inputs by other local industries.",TF,"False. That is a forward linkage. A backward linkage is when inputs into the staple industry are produced locally."],
+["staples","True or false: staples theory suggests staples can promote investment and diversification by creating linkage effects.",TF,"True. This is one of the key assumptions (Hirschman 1965)."],
+["staples","Fishing: a local boatyard builds the boats used by the fleet. Which linkage?",["Backward","Forward","Final demand","Leakage"],"Inputs into the staple industry produced locally = backward."],
+["staples","Fishing: a local cannery processes the catch. Which linkage?",["Forward","Backward","Final demand","Leakage"],"The staple's output becomes an input to another local industry = forward."],
+["staples","Fishing: local shops sell food and clothing to the fishers' families. Which linkage?",["Final demand","Forward","Backward","Leakage"],"Workers' consumption needs met by local industries = final demand."],
+["staples","Why do staples economies experience 'boom and bust' cycles?",["Demand and prices are set by volatile external markets","Local governments change tax rates on resource firms often","Linkages cause the region to overproduce for local markets","Immigration to the region rises and falls with the seasons"],"'Demand is dictated by volatile external markets.'"],
+["staples","Which is an example of the 'staples trap'?",["A region keeps reinvesting in exporting raw logs instead of developing other industries","A region uses its timber to build up a local furniture and housing industry","A region diversifies from fishing into software and tourism over two decades","A region's mine workers spend most of their wages in local shops and services"],"The staples trap is a cycle of dependency on exporting more staples. Building furniture (a forward linkage) is a way out."],
+["staples","Under which pillar of sustainable development does 'dispossessing Indigenous peoples of land' fall?",["Social","Economic","Environmental","None of the three"],"Social pillar: land, and dispossessing Indigenous peoples of land, is central to Canada's resource-driven economy."],
+["staples","Under which pillar does 'profits flowing to foreign companies (leakage)' fall?",["Economic","Social","Environmental","None of the three"],"Economic pillar: boom and bust, leakage, the staples trap."],
+["staples","Under which pillar does treating land as a 'standing reserve' fall?",["Environmental","Economic","Social","None of the three"],"Environmental pillar: land as a stock of raw materials, against intergenerational equity."],
+["staples","Which thesis would best open a critical analysis of staples theory for sustainable development in Canada?",["Staples built Canada's economy but have been unsustainable socially, economically and environmentally","Staples theory proves that resource exports always lead to diversification and convergence","Staples theory mainly explains manufacturing growth in the Québec City–Windsor corridor","Staples theory shows that tax cuts for resource firms are the key to regional growth"],"Essay formula: thesis → assumptions and examples → economic, nation-building, social and environmental drawbacks → conclusion."],
+["staples","Fur is to Central Canada as ______ is to Atlantic Canada.",["Fish and timber","Wheat","The tar sands","Manufacturing"],"Fish and timber (Atlantic) · fur (Central) · wheat (Prairies) · today, the Alberta tar sands."],
+
+// ----- 9 · Colonization Road -----
+["road","True or false: Colonization Road shows that settler roads opened First Nations land for Canadian settlement.",TF,"True. The film links these roads to taking Indigenous land for settlement and resource use."],
+["road","True or false: Shoal Lake 40 was cut off from the mainland so that Winnipeg could have a supply of drinking water.",TF,"True. The aqueduct work left the community on an artificial island, under a boil-water advisory for almost two decades."],
+["road","True or false: Kenora is a settler town on Anishinaabe land.",TF,"True. It has its own Colonization Road."],
+["road","What does Shoal Lake 40's experience show about settler colonial projects?",["Benefits went to a settler city while costs fell on a First Nation","Benefits were shared equally by the settler city and the First Nation","The project was requested by the First Nation to improve its water","The project mainly supported tourism and recreation around the lake"],"Winnipeg gained drinking water; Shoal Lake 40 was cut off with no road access and unsafe water."],
+["road","Which principle stands in clearest contrast to how Shoal Lake 40 was treated?",["Free, prior and informed consent before development proceeds","Lower taxes on new development projects to attract investment","Agglomeration of firms and workers in large urban areas","Projecting growth with a positive shift term for the region"],"TRC #92 requires consent before proceeding, the opposite of what happened at Shoal Lake 40."],
+
+// ----- 10 · Agglomeration economies -----
+["agg","True or false: agglomeration economies arise from within a single firm as it grows larger.",TF,"False. Those are internal economies of scale. Agglomeration economies are external: they come from connections with other firms."],
+["agg","True or false: urbanization economies come from being near many different kinds of firms.",TF,"True. Urbanization = many diverse firms; localization = firms in the same industry."],
+["agg","A Waterloo software start-up picks up ideas from engineers at other software firms nearby. Which benefit?",["Localization: knowledge spillovers","Urbanization: diversified labour pool","Urbanization: shared inputs","Localization: shared inputs"],"Same-industry firms sharing ideas = localization (SSK: shared inputs, specialized labour, knowledge spillovers)."],
+["agg","A new food company in Montréal hires a graphic designer who used to work for a bank and a theatre. Which benefit?",["Urbanization: diversified labour pool","Localization: specialized labour pool","Localization: knowledge spillovers","Urbanization: shared inputs"],"Workers moving across many different industries = urbanization (SDE: shared inputs, diversified labour, exposure)."],
+["agg","A firm in a large city adopts management practices it learned from firms in very different industries. Which benefit?",["Urbanization: exposure to different ways of doing things","Localization: knowledge spillovers among rival firms","Localization: a specialized labour pool in one industry","Diseconomies of scale from crowding in the city"],"Learning from unlike firms = urbanization's 'exposure to different ways of doing things.'"],
+["agg","Localization and urbanization economies differ mainly in…",["Whether the nearby firms are in the same industry or in many different industries","Whether the benefits come from inside the firm or from outside it","Whether the benefits raise costs for firms or lower costs for firms","Whether the firms are located in the heartland or in the hinterland"],"Both are external economies that lower costs. Localization = like firms; urbanization = unlike firms."],
+["agg","Which is a sign of diseconomies of scale rather than agglomeration economies?",["Rents and wages rise and traffic congestion grows as firms crowd in","Firms share a nearby supplier of specialized parts and services","Firms hire from a large pool of workers trained in their industry","Firms learn new ideas and methods from nearby rival firms"],"Diseconomies: 'as output increases, cost per unit increases' (rents, congestion, higher wages)."],
+
+// ----- 11 · Economic base theory -----
+["base","True or false: in economic base theory, the non-basic sector is the engine of regional growth.",TF,"False. The basic (export) sector drives growth; the non-basic sector supports it."],
+["base","True or false: economic base theory assumes demand for a region's exports comes from outside the region.",TF,"True. Export demand is exogenous, outside the region's control."],
+["base","True or false: economic base theory predicts that regions will diverge over time.",TF,"False. It predicts diversification is inevitable and leads to convergence between regions."],
+["base","A barber shop serving local residents belongs to which sector?",["Non-basic","Basic","Both basic and non-basic","Neither sector"],"Its final market is local, so it is non-basic."],
+["base","A pulp mill that sells its output to U.S. buyers belongs to which sector?",["Basic","Non-basic","Both basic and non-basic","Neither sector"],"Its final market is non-local, so it is basic (export)."],
+["base","According to economic base theory, what happens to the non-basic sector when the basic sector grows?",["It grows too, because base workers' income is spent locally","It shrinks, because workers move to the basic sector","It stays the same, because the sectors are separate","It begins exporting, so it becomes basic"],"Total activity is driven by exports. Base income supports the local, non-basic sector."],
+["base","Which sequence matches how economic base theory says a regional economy grows?",["Exports grow → linkages and external economies → cost advantages → diversification → convergence","Local spending grows → imports fall → exports rise → regions diverge over time","Tax cuts → firms relocate → costs fall → exports rise → convergence","Immigration grows → services grow → large cities grow → small cities decline"],"E-E-E-C-C: Exports drive → Exogenous demand → Economies + linkages → Cost advantage → Convergence."],
+["base","How is economic base theory connected to the base multiplier?",["The multiplier measures how much total activity the basic (export) sector supports","The multiplier measures how fast exports grow each year","The multiplier measures the region's share of national jobs","The multiplier measures the gap between regional and national growth"],"Base multiplier = total ÷ base: total local activity supported by base (export) activity."],
+
+// ----- 12 · Heartland–hinterland and Filion -----
+["hh","True or false: in the heartland–hinterland model, the hinterland is dominated by manufacturing.",TF,"False. The hinterland is dominated by natural resource extraction; the heartland by manufacturing and high-order services."],
+["hh","True or false: according to Filion, the most important divide today is between large, growing cities and smaller, declining ones.",TF,"True. This divide is replacing the heartland–hinterland divide."],
+["hh","Which city is in Canada's heartland?",["Kingston, Ontario","Thunder Bay, Ontario","Saskatoon, Saskatchewan","Sydney, Nova Scotia"],"The heartland is the Québec City–Windsor corridor, which includes Kingston."],
+["hh","A small northern Ontario mill town that is losing population falls on which side of Filion's new divide?",["Smaller, declining cities","Large, growing cities","The heartland","Neither side"],"The new divide is large, growing cities vs. smaller, declining cities."],
+["hh","Why does immigration drive Filion's new divide?",["Most immigrants settle in the largest metropolitan areas, so those cities grow","Immigrants mostly settle in resource towns in the hinterland","Immigration raises birth rates in small towns","Immigration is restricted to the heartland by policy"],"With low birth rates, immigration drives population growth, and most immigrants settle in the biggest metros."],
+["hh","Why do service activities drive Filion's new divide?",["Services, especially high-order services, concentrate in large cities","Services are mainly located in resource towns","Services replace immigration as a source of growth","Services are exported from the hinterland to the heartland"],"Large cities are driven by immigration and service activities."],
+["hh","In the old model, what was the heartland's role?",["It produced manufactured goods and exerted influence over the rest of the country","It supplied raw materials and markets to the rest of the country","It was sparsely populated and focused on resource extraction","It depended on fishing and the fur trade"],"The hinterland supplied raw materials and markets for the heartland's manufactured goods."],
+
+// ----- Terms -----
+["terms","True or false: economic growth always produces economic development.",TF,"False. Growth = a rise in GDP. Development is broader (fairer income, well-being, empowerment) and may not follow."],
+["terms","True or false: comparative advantage is the same as absolute advantage.",TF,"False. Comparative = lower opportunity cost. Absolute = producing more efficiently."],
+["terms","True or false: a country can have a comparative advantage in a good even if another country produces it more efficiently.",TF,"True. In her example, Portugal has the absolute advantage in both goods, yet the trading partner still has a comparative advantage in one."],
+["terms","Which is an example of economic development without economic growth?",["Income becomes more equally shared and well-being improves while GDP stays flat","GDP rises 12% in a year while inequality widens and well-being falls","More goods and services are produced, but wages and well-being fall","The number of businesses and jobs rises while incomes stay the same"],"Development = fairer income, improved well-being, empowerment. Growth = rising GDP."],
+["terms","A factory doubles its output, and its cost per unit rises because of crowded roads and expensive land. This is…",["Diseconomies of scale","Economies of scale","Comparative advantage","A backward linkage"],"'As output increases, cost per unit increases' (rents, congestion, higher wages)."],
+["terms","A planner counts every town whose residents commute into a city as part of one urban area. Which definition of the urban is this?",["The economic definition","The political definition","Both definitions","Neither definition"],"Economic = functionally integrated, non-agricultural activities. Political = the area under a municipal corporation's authority."],
+["terms","Which is NOT one of the pillars of sustainable development?",["Political","Social","Economic","Environmental"],"Three pillars: social, economic, environmental (S-E-E)."],
+["terms","A region can produce wheat at a lower opportunity cost than its trading partner. What does it have?",["A comparative advantage in wheat","An absolute advantage in wheat","Both kinds of advantage in wheat","No advantage in wheat"],"Lower opportunity cost = comparative advantage (Ricardo 1817)."],
+["terms","Which term describes cities competing by cutting wages and standards to attract firms?",["Race to the bottom","Leakage","Diseconomies of scale","Land write-down"],"'Competition through cost-cutting that can degrade quality of work and/or life.'"],
+];
+for (const q of QP) Q.push([...q, "p"]);
+
 // ---------- engine ----------
-const LS = "urbs380-missed-v2";
-const store = {
-  get() { try { return new Set(JSON.parse(localStorage.getItem(LS) || "[]")); } catch { return new Set(); } },
-  set(s) { try { localStorage.setItem(LS, JSON.stringify([...s])); } catch {} },
-};
-let missedSet = store.get();
+// Missed and seen questions are stored by question text, so edits to the bank never point them at the wrong question.
+const LS = "urbs380-missed-v3", SEEN = "urbs380-seen-v1";
+const textStore = (key) => ({
+  get() { try { return new Set(JSON.parse(localStorage.getItem(key) || "[]")); } catch { return new Set(); } },
+  set(s) { try { localStorage.setItem(key, JSON.stringify([...s])); } catch {} },
+});
+const store = textStore(LS), seenStore = textStore(SEEN);
+let missedSet = store.get(), seenSet = seenStore.get();
+const BANK_SIZE = Q.length;              // generated questions are appended after this
+const byText = new Map(Q.map((q, i) => [q[1], i]));
 const SIZES = [10, 20, 40, "All"];
-const LEVELS = { hard: "Hard only", std: "Standard only", both: "Both" };
+const LEVELS = { p: "Exam-style (new)", h: "Hard", s: "Standard", all: "Everything" };
 let size = 20;
-let level = "hard";
+let level = "p";
 let selected = new Set(Object.keys(TOPICS));
 let round = null;
 
 const $ = (s) => document.querySelector(s);
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const shuffle = (a) => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const kind = (q) => q[4] || "s";
 const isHard = (q) => q[4] === "h";
+const isGen = (q) => q[4] === "g";
 const isMulti = (q) => !Array.isArray(q[2]);
-const levelOk = (q) => level === "both" || (level === "hard" ? isHard(q) : !isHard(q));
+const levelMatch = (q, l) => !isGen(q) && (l === "all" || kind(q) === l);
+const levelOk = (q) => levelMatch(q, level);
 const countBy = (k) => Q.filter((q) => q[0] === k && levelOk(q)).length;
 const answerText = (q) => q[2] === TF ? (q[3].startsWith("True") ? "True" : "False") : isMulti(q) ? q[2].c.join(" · ") : q[2][0];
+const missedIds = () => [...missedSet].map((t) => byText.get(t)).filter((i) => i !== undefined);
+
+// ----- calculation questions with new numbers every time (wrong options = common mistakes) -----
+const gi = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+const gf = (n, d = 0) => Number(n).toLocaleString("en-US", { minimumFractionDigits: d, maximumFractionDigits: d });
+const sg = (n) => (n > 0 ? "+" : n < 0 ? "−" : "") + Math.abs(n) + "%";
+const GEN = {
+  mult: [
+    () => { const B = gi(20, 90) * 100, N = gi(20, 200) * 100, T = B + N;
+      return ["mult", `A region has ${gf(B)} base jobs and ${gf(N)} non-base jobs. What is the base multiplier?`, [gf(T / B, 2), gf(N / B, 2), gf(B / T, 2), gf(T / N, 2)],
+        `Total = ${gf(B)} + ${gf(N)} = ${gf(T)}. Base multiplier = total ÷ base = ${gf(T)} ÷ ${gf(B)} = ${gf(T / B, 2)}. (${gf(N / B, 2)} is the multiplier effect.)`]; },
+    () => { const B = gi(20, 90) * 100, N = gi(20, 200) * 100, T = B + N;
+      return ["mult", `Total employment is ${gf(T)} and base employment is ${gf(B)}. What is the multiplier effect?`, [gf(N / B, 2), gf(T / B, 2), gf(B / N, 2), gf(N / T, 2)],
+        `Non-base = ${gf(T)} − ${gf(B)} = ${gf(N)}. Multiplier effect = non-base ÷ base = ${gf(N / B, 2)} (= base multiplier ${gf(T / B, 2)} − 1).`]; },
+    () => { const m = gi(15, 35) / 10, n = gi(2, 30) * 25, t = Math.round(n * m);
+      return ["mult", `The base multiplier is ${gf(m, 1)}. A new firm brings ${gf(n)} base jobs. How many new jobs in total (base + non-base) are projected?`, [gf(t), gf(Math.round(n * (m - 1))), gf(t + n), gf(Math.round(n / m))],
+        `Total = new base jobs × base multiplier = ${gf(n)} × ${gf(m, 1)} = ${gf(t)}. This already includes the ${gf(n)} base jobs.`]; },
+    () => { const m = gi(15, 35) / 10, n = gi(2, 30) * 25, nb = Math.round(n * (m - 1));
+      return ["mult", `The base multiplier is ${gf(m, 1)}. A new firm brings ${gf(n)} base jobs. How many new NON-base jobs are projected?`, [gf(nb), gf(Math.round(n * m)), gf(n), gf(Math.round(n / m))],
+        `Non-base = new base jobs × multiplier effect = ${gf(n)} × ${gf(m - 1, 1)} = ${gf(nb)}.`]; },
+    () => { const m = gi(15, 35) / 10, n = gi(2, 30) * 25, t = Math.round(n * m);
+      return ["mult", `The base multiplier is ${gf(m, 1)}. A plant with ${gf(n)} base jobs closes. How many jobs in total are projected to be lost?`, [gf(t), gf(Math.round(n * (m - 1))), gf(n), gf(t + n)],
+        `Closures work in reverse: ${gf(n)} × ${gf(m, 1)} = ${gf(t)} jobs lost in total (${gf(n)} base + ${gf(t - n)} non-base).`]; },
+    () => { const B = gi(20, 90) * 100, N = gi(20, 200) * 100, T = B + N, truth = Math.random() < 0.5, shown = truth ? N / B : T / B;
+      return ["mult", `True or false: a region with ${gf(T)} total jobs and ${gf(B)} base jobs has a multiplier EFFECT of ${gf(shown, 2)}.`, TF,
+        `${truth ? "True" : "False"}. Multiplier effect = non-base ÷ base = ${gf(N)} ÷ ${gf(B)} = ${gf(N / B, 2)}.${truth ? "" : ` ${gf(T / B, 2)} is the base multiplier.`}`]; },
+  ],
+  lq: [
+    () => { const exact = Math.random() < 0.2, nat = gi(20, 120) / 10, lq = exact ? 1 : gi(5, 30) / 10, loc = Math.round(nat * lq * 10) / 10, L = loc / nat;
+      const cls = L > 1 ? "basic" : "non-basic", other = L > 1 ? "non-basic" : "basic";
+      const opts = exact ? ["LQ 1.00: non-basic", "LQ 1.00: basic", "LQ 0.00: non-basic", "LQ 2.00: basic"]
+        : [`LQ ${gf(L, 2)}: ${cls}`, `LQ ${gf(L, 2)}: ${other}`, `LQ ${gf(1 / L, 2)}: ${other}`, `LQ ${gf(1 / L, 2)}: ${cls}`];
+      return ["lq", `An industry is ${gf(loc, 1)}% of the region's jobs and ${gf(nat, 1)}% of the nation's jobs. How is it classified?`, opts,
+        `LQ = local % ÷ national % = ${gf(loc, 1)} ÷ ${gf(nat, 1)} = ${gf(L, 2)}. ${L > 1 ? "LQ > 1, so basic (only the excess is base)." : "LQ ≤ 1 (including exactly 1), so non-basic."}`]; },
+    () => { const L = gi(11, 40) / 10, e = gi(4, 60) * 50, nb = Math.round(e / L), b = e - nb;
+      return ["lq", `An industry has ${gf(e)} jobs and an LQ of ${gf(L, 1)}. How many of its jobs are BASE jobs?`, [gf(b), gf(nb), gf(e), gf(Math.round(e * (L - 1)))],
+        `Non-base = (1 ÷ ${gf(L, 1)}) × ${gf(e)} ≈ ${gf(nb)}. Base = ${gf(e)} − ${gf(nb)} = ${gf(b)}.`]; },
+    () => { const L = gi(5, 30) / 10, truth = Math.random() < 0.5;
+      const basic = L > 1, claim = truth ? basic : !basic;
+      return ["lq", `True or false: an industry with an LQ of ${gf(L, 1)} is classified as ${claim ? "basic" : "non-basic"}.`, TF,
+        `${truth ? "True" : "False"}. LQ > 1 is basic; LQ ≤ 1 (including exactly 1) is non-basic. ${gf(L, 1)} is ${basic ? "basic" : "non-basic"}.`]; },
+  ],
+  shift: [
+    () => { let r, R; do { r = gi(-6, 15); R = gi(-4, 12); } while (r === R || R === 0 || r === 0 || r + R === r - R);
+      return ["shift", `An industry grew ${sg(r)} in the region and ${sg(R)} nationally. What is the shift term s?`, [sg(r - R), sg(R - r), sg(r + R), sg(-r - R)],
+        `s = r − R = ${sg(r)} − (${sg(R)}) = ${sg(r - R)}. ${r - R > 0 ? "Positive: a regional advantage." : "Negative: the region grows slower than the nation, so jobs shift out."}`]; },
+    () => { let R, s; do { R = gi(-3, 10); s = gi(-6, 6); } while (R === 0 || s === 0 || R === s || R === -s);
+      const e = gi(10, 80) * 100, f = (x) => gf(Math.round(e * (1 + x / 100)));
+      return ["shift", `e = ${gf(e)}, R = ${R}%, s = ${sg(s)}. What is the shift-share projection e′?`, [f(R + s), f(R), f(R - s), f(s)],
+        `e′ = (1 + R + s) × e = (1 + ${gf(R / 100, 2)} + ${gf(s / 100, 2)}) × ${gf(e)} = ${f(R + s)}. Convert percentages to decimals.`]; },
+    () => { const start = gi(10, 60) * 100, r = gi(-6, 15), end = Math.round(start * (1 + r / 100)); let R; do { R = gi(-4, 10); } while (R === r || R === 0 || r - R === r + R);
+      return ["shift", `A regional industry went from ${gf(start)} to ${gf(end)} jobs while the national industry grew ${R}%. What is s?`, [sg(r - R), sg(r), sg(R - r), sg(r + R)],
+        `r = (${gf(end)} − ${gf(start)}) ÷ ${gf(start)} = ${sg(r)}. s = r − R = ${sg(r)} − (${sg(R)}) = ${sg(r - R)}.`]; },
+  ],
+};
+function genQuestion(topic) {
+  for (let t = 0; t < 30; t++) {
+    const fns = GEN[topic], q = fns[Math.floor(Math.random() * fns.length)]();
+    if (q[2] === TF || new Set(q[2]).size === q[2].length) { Q.push([...q, "g"]); return Q.length - 1; }
+  }
+  return null;
+}
 
 function renderSetup() {
   $("#topics").innerHTML = Object.entries(TOPICS).map(([k, t]) =>
     `<button class="chip" type="button" data-k="${k}" aria-pressed="${selected.has(k)}"><span class="stars">${"★".repeat(t.stars)}</span>${esc(t.name)} <span class="n">${countBy(k)}</span></button>`).join("");
-  $("#levels").innerHTML = Object.entries(LEVELS).map(([k, v]) => `<button class="chip" type="button" data-l="${k}" aria-pressed="${k === level}">${v} <span class="n">${Q.filter((q) => k === "both" || (k === "hard") === isHard(q)).length}</span></button>`).join("");
+  $("#levels").innerHTML = Object.entries(LEVELS).map(([k, v]) => `<button class="chip" type="button" data-l="${k}" aria-pressed="${k === level}">${v} <span class="n">${Q.filter((q) => levelMatch(q, k)).length}</span></button>`).join("");
   $("#sizes").innerHTML = SIZES.map((s) => `<button class="chip" type="button" data-s="${s}" aria-pressed="${s === size}">${s}</button>`).join("");
-  $("#missedCount").textContent = missedSet.size;
-  $("#startMissed").disabled = missedSet.size === 0;
+  const ids = pool(), unseen = ids.filter((i) => !seenSet.has(Q[i][1])).length;
+  $("#unseenInfo").textContent = unseen ? `${unseen} of ${ids.length} questions in this selection you haven't seen yet. Unseen questions come first.` : `You've seen all ${ids.length} questions in this selection. New rounds reshuffle them.`;
+  $("#missedCount").textContent = missedIds().length;
+  $("#startMissed").disabled = missedIds().length === 0;
   $("#start").disabled = selected.size === 0;
 }
 $("#topics").addEventListener("click", (e) => {
@@ -551,15 +776,26 @@ $("#sizes").addEventListener("click", (e) => {
 });
 $("#allTopics").onclick = () => { selected = new Set(Object.keys(TOPICS)); renderSetup(); };
 $("#hiTopics").onclick = () => { selected = new Set(Object.keys(TOPICS).filter((k) => TOPICS[k].stars === 3)); renderSetup(); };
-const pool = () => Q.map((_, i) => i).filter((i) => selected.has(Q[i][0]) && levelOk(Q[i]));
-$("#start").onclick = () => startRound(pool(), level === "hard" ? "Hard round" : level === "std" ? "Standard round" : "Mixed round");
-$("#startMissed").onclick = () => startRound([...missedSet].filter((i) => Q[i]), "Missed questions");
+$("#resetSeen").onclick = () => { seenSet = new Set(); seenStore.set(seenSet); renderSetup(); };
+function pool() { const ids = []; for (let i = 0; i < BANK_SIZE; i++) if (selected.has(Q[i][0]) && levelOk(Q[i])) ids.push(i); return ids; }
+$("#start").onclick = () => startRound(pool(), LEVELS[level] + " round", { gen: true });
+$("#startMissed").onclick = () => startRound(missedIds(), "Missed questions", { all: true });
 
-function startRound(ids, label, keepSize) {
-  ids = shuffle(ids);
-  if (!keepSize && size !== "All") ids = ids.slice(0, size);
-  if (!ids.length) return;
-  round = { ids, pos: 0, right: 0, wrong: [], label, answered: false };
+function startRound(ids, label, opt = {}) {
+  let picked;
+  if (opt.all) picked = shuffle(ids);
+  else {
+    const unseen = shuffle(ids.filter((i) => !seenSet.has(Q[i][1]))), seen = shuffle(ids.filter((i) => seenSet.has(Q[i][1])));
+    const want = size === "All" ? ids.length : size;
+    // About a quarter of each round is calculation practice with brand-new numbers.
+    const calcTopics = ["mult", "lq", "shift"].filter((t) => selected.has(t));
+    const nGen = opt.gen && calcTopics.length ? Math.max(2, Math.round((size === "All" ? 40 : size) / 4)) : 0;
+    picked = [...unseen, ...seen].slice(0, Math.max(0, want - (size === "All" ? 0 : nGen)));
+    for (let i = 0; i < nGen; i++) { const g = genQuestion(calcTopics[i % calcTopics.length]); if (g !== null) picked.push(g); }
+    picked = shuffle(picked);
+  }
+  if (!picked.length) return;
+  round = { ids: picked, pos: 0, right: 0, wrong: [], label, answered: false };
   renderQ();
 }
 
@@ -576,9 +812,10 @@ function renderQ() {
   round.cur = { id, choices, correct, multi: isMulti(q), picked: new Set() };
   const keys = "ABCDEFGH";
   const pct = (round.pos / round.ids.length) * 100;
+  const badge = isHard(q) ? '<span class="tag hard">Hard</span>' : kind(q) === "p" ? '<span class="tag exam">Exam-style</span>' : isGen(q) ? '<span class="tag exam">New numbers</span>' : "";
   $("#quiz").innerHTML = `
     <div class="meta">
-      <span class="tags"><span class="tag">${esc(TOPICS[topic].name)}</span>${isHard(q) ? '<span class="tag hard">Hard</span>' : ""}${round.cur.multi ? '<span class="tag multi">Select all that apply</span>' : ""}</span>
+      <span class="tags"><span class="tag">${esc(TOPICS[topic].name)}</span>${badge}${round.cur.multi ? '<span class="tag multi">Select all that apply</span>' : ""}</span>
       <span>${esc(round.label)} · ${round.pos + 1} / ${round.ids.length}</span>
     </div>
     <div class="bar"><i style="width:${pct}%"></i></div>
@@ -611,8 +848,13 @@ function check() {
   if (!c.picked.size) return;
   round.answered = true;
   const ok = c.picked.size === c.correct.length && c.correct.every((i) => c.picked.has(i));
-  if (ok) { round.right++; missedSet.delete(c.id); } else { round.wrong.push(c.id); missedSet.add(c.id); }
-  store.set(missedSet);
+  const q = Q[c.id];
+  if (ok) round.right++; else round.wrong.push(c.id);
+  if (!isGen(q)) {
+    ok ? missedSet.delete(q[1]) : missedSet.add(q[1]);
+    seenSet.add(q[1]);
+    store.set(missedSet); seenStore.set(seenSet);
+  }
   $("#quiz").querySelectorAll(".opt").forEach((b, j) => {
     b.disabled = true;
     const isC = c.correct.includes(j), isP = c.picked.has(j);
@@ -623,19 +865,19 @@ function check() {
   });
   const last = round.pos === round.ids.length - 1;
   const head = ok ? "Correct" : c.multi ? "Not quite. Correct set: " + c.correct.map((i) => c.choices[i]).join(" · ") : "Not quite. Answer: " + c.choices[c.correct[0]];
-  $("#fbslot").innerHTML = `<div class="fb ${ok ? "" : "no"}"><b>${esc(head)}</b><p>${esc(Q[c.id][3])}</p></div>`;
+  $("#fbslot").innerHTML = `<div class="fb ${ok ? "" : "no"}"><b>${esc(head)}</b><p>${esc(q[3])}</p></div>`;
   const slot = $("#check") || $("#quiz .actions .hint");
   slot.outerHTML = `<button class="btn" id="next" type="button">${last ? "See results" : "Next question"}</button>`;
   $("#next").onclick = next;
   $("#next").focus({ preventScroll: true });
-  $("#missedCount").textContent = missedSet.size;
-  $("#startMissed").disabled = missedSet.size === 0;
+  $("#missedCount").textContent = missedIds().length;
+  $("#startMissed").disabled = missedIds().length === 0;
 }
 
 function next() {
   if (!round.answered) return;
   if (round.pos < round.ids.length - 1) { round.pos++; renderQ(); }
-  else renderDone();
+  else { renderDone(); renderSetup(); }
 }
 
 function renderDone() {
@@ -657,11 +899,11 @@ function renderDone() {
       <div class="tbl-wrap"><table><thead><tr><th>Topic (weakest first)</th><th>Score</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>
       <div class="row">
         ${round.wrong.length ? `<button class="btn" id="retry" type="button">Retry the ${round.wrong.length} I missed</button>` : ""}
-        <button class="btn ${round.wrong.length ? "ghost" : ""}" id="again" type="button">New round</button>
+        <button class="btn ${round.wrong.length ? "ghost" : ""}" id="again" type="button">Next round (new questions)</button>
       </div>
-      ${missed ? `<h3 style="margin:0;font-family:var(--font-display)">Review what you missed</h3><ul class="missed-list">${missed}</ul>` : `<p style="margin:0">Perfect round. Try "All" questions on Hard next.</p>`}
+      ${missed ? `<h3 style="margin:0;font-family:var(--font-display)">Review what you missed</h3><ul class="missed-list">${missed}</ul>` : `<p style="margin:0">Perfect round. Start the next round for questions you haven't seen.</p>`}
     </div>`;
-  const r = $("#retry"); if (r) r.onclick = () => startRound(round.wrong.slice(), "Retry missed", true);
+  const r = $("#retry"); if (r) r.onclick = () => startRound(round.wrong.slice(), "Retry missed", { all: true });
   $("#again").onclick = () => $("#start").click();
 }
 
@@ -675,7 +917,6 @@ document.addEventListener("keydown", (e) => {
     else if (round.answered && $("#next")) { next(); e.preventDefault(); }
   }
 });
-
 
 // ---------- MODES ----------
 const MODES = ["mc", "calc", "written"];
@@ -990,5 +1231,5 @@ function openWritten(i) {
 renderCalcTypes();
 
 renderSetup();
-startRound(pool(), "Hard round");
+startRound(pool(), LEVELS[level] + " round", { gen: true });
 </script>
