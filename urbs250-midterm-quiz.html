@@ -1,0 +1,572 @@
+<title>URBS 250 Practice Midterm</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@500&family=Public+Sans:wght@400;500;600&display=swap">
+<style>
+  /* Layout: one reading column of question cards, grouped by the five review-slide topics,
+     under a sticky score bar drawn like a map scale bar. */
+  :root {
+    --bg: #eef2f1;
+    --surface: #ffffff;
+    --ink: #15232b;
+    --muted: #586a72;
+    --rule: #d3dcdc;
+    --accent: #1f5f8b;
+    --accent-soft: #e2edf5;
+    --ochre: #a86d0c;
+    --good: #23704a;
+    --good-soft: #e1f1e7;
+    --bad: #a8352b;
+    --bad-soft: #f8e4e1;
+    --font-display: "Barlow Condensed", "Arial Narrow", "Roboto Condensed", sans-serif;
+    --font-body: "Public Sans", "Segoe UI", system-ui, sans-serif;
+    --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0e161b; --surface: #16222a; --ink: #e4ebee; --muted: #93a5ad; --rule: #2a3a43;
+      --accent: #74b4e2; --accent-soft: #1b3344; --ochre: #e2ab4c;
+      --good: #63c592; --good-soft: #173527; --bad: #ec7d71; --bad-soft: #3d1f1c;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0e161b; --surface: #16222a; --ink: #e4ebee; --muted: #93a5ad; --rule: #2a3a43;
+    --accent: #74b4e2; --accent-soft: #1b3344; --ochre: #e2ab4c;
+    --good: #63c592; --good-soft: #173527; --bad: #ec7d71; --bad-soft: #3d1f1c;
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font: 400 16px/1.55 var(--font-body);
+  }
+  body::before {
+    content: ""; position: fixed; inset: 0 0 auto;
+    height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--surface);
+  }
+  .wrap {
+    max-width: 760px; margin: 0 auto;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
+
+  /* Header */
+  header.intro { padding-block: 40px 24px; }
+  .eyebrow {
+    font: 500 12px/1 var(--font-mono); letter-spacing: .08em; text-transform: uppercase;
+    color: var(--ochre); margin: 0 0 12px;
+  }
+  h1 {
+    font: 700 clamp(36px, 7vw, 54px)/1 var(--font-display); letter-spacing: .005em;
+    margin: 0 0 14px; text-wrap: balance;
+  }
+  .lede { margin: 0; color: var(--muted); max-width: 62ch; }
+  .facts {
+    display: flex; flex-wrap: wrap; gap: 8px 20px; margin: 18px 0 0; padding: 0; list-style: none;
+    font: 500 13px/1.3 var(--font-mono); color: var(--ink);
+  }
+  .facts li::before { content: "▪ "; color: var(--accent); }
+
+  /* Sticky score bar */
+  .bar {
+    position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5;
+    background: var(--surface); border-bottom: 1px solid var(--rule);
+  }
+  .bar .wrap { padding-block: 12px; display: grid; gap: 10px; }
+  .bar-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; justify-content: space-between; }
+  .score { font: 500 14px/1.2 var(--font-mono); font-variant-numeric: tabular-nums; }
+  .score b { font: 700 22px/1 var(--font-display); color: var(--accent); margin-right: 2px; }
+  .controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .seg { display: inline-flex; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+  .seg button {
+    font: 600 13px/1 var(--font-body); padding: 8px 12px; border: 0; background: transparent;
+    color: var(--muted); cursor: pointer;
+  }
+  .seg button[aria-pressed="true"] { background: var(--accent); color: var(--surface); }
+  .btn {
+    font: 600 13px/1 var(--font-body); padding: 9px 14px; border-radius: 6px; cursor: pointer;
+    border: 1px solid var(--rule); background: var(--surface); color: var(--ink);
+  }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--surface); }
+  .btn:disabled { opacity: .45; cursor: default; }
+  button:focus-visible, a:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  /* Progress drawn as a map scale bar: 40 alternating segments, ticks every 10 */
+  .scalebar { display: grid; gap: 3px; }
+  .segments { display: grid; grid-template-columns: repeat(40, 1fr); height: 8px; border: 1px solid var(--ink); }
+  .segments span { background: var(--surface); }
+  .segments span:nth-child(odd) { background: var(--rule); }
+  .segments span.done { background: var(--accent); }
+  .segments span.good { background: var(--good); }
+  .segments span.bad { background: var(--bad); }
+  .ticks { display: flex; justify-content: space-between; font: 500 10px/1 var(--font-mono); color: var(--muted); }
+  .mode-note { font-size: 12px; color: var(--muted); margin: 0; }
+
+  /* Sections */
+  main { padding-block: 8px 48px; }
+  section.topic { padding-top: 36px; }
+  .topic-head { display: grid; gap: 6px; padding-bottom: 14px; border-bottom: 2px solid var(--ink); margin-bottom: 18px; }
+  .topic-head .eyebrow { margin: 0; }
+  h2 { font: 700 30px/1.05 var(--font-display); margin: 0; text-wrap: balance; }
+  .know { margin: 0; font-size: 14px; color: var(--muted); }
+  .know strong { color: var(--ink); font-weight: 600; }
+
+  .qlist { display: grid; gap: 14px; }
+  .q {
+    background: var(--surface); border: 1px solid var(--rule); border-radius: 8px;
+    padding: 18px 18px 16px; scroll-margin-top: 140px;
+  }
+  .q-top { display: flex; gap: 12px; align-items: baseline; }
+  .qnum { font: 700 22px/1 var(--font-display); color: var(--accent); min-width: 2ch; font-variant-numeric: tabular-nums; }
+  .qtext { margin: 0; font-weight: 600; min-width: 0; }
+  .opts { list-style: none; margin: 14px 0 0; padding: 0; display: grid; gap: 8px; }
+  .opt {
+    width: 100%; display: grid; grid-template-columns: 28px 1fr auto; gap: 10px; align-items: center;
+    text-align: left; font: 400 15px/1.4 var(--font-body); color: var(--ink);
+    background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; padding: 10px 12px;
+    cursor: pointer; transition: border-color .12s, background-color .12s;
+  }
+  .opt:hover:not(:disabled) { border-color: var(--accent); }
+  .opt:disabled { cursor: default; }
+  .letter {
+    display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%;
+    border: 1px solid var(--rule); font: 500 13px/1 var(--font-mono); color: var(--muted);
+  }
+  .opt .mark { font: 500 12px/1 var(--font-mono); letter-spacing: .04em; text-transform: uppercase; }
+  .opt.picked { border-color: var(--accent); background: var(--accent-soft); }
+  .opt.picked .letter { background: var(--accent); border-color: var(--accent); color: var(--surface); }
+  .opt.is-correct { border-color: var(--good); background: var(--good-soft); }
+  .opt.is-correct .letter { background: var(--good); border-color: var(--good); color: var(--surface); }
+  .opt.is-correct .mark { color: var(--good); }
+  .opt.is-wrong { border-color: var(--bad); background: var(--bad-soft); }
+  .opt.is-wrong .letter { background: var(--bad); border-color: var(--bad); color: var(--surface); }
+  .opt.is-wrong .mark { color: var(--bad); }
+  .explain {
+    margin: 12px 0 0; padding: 10px 12px; border-left: 3px solid var(--ochre);
+    background: var(--bg); font-size: 14px; border-radius: 0 6px 6px 0;
+  }
+  .explain b { font-weight: 600; }
+
+  /* Results */
+  .results { margin-top: 36px; background: var(--surface); border: 2px solid var(--ink); border-radius: 8px; padding: 20px; }
+  .results h2 { margin-bottom: 4px; }
+  .big { font: 700 48px/1 var(--font-display); color: var(--accent); font-variant-numeric: tabular-nums; }
+  .tbl-wrap { overflow-x: auto; margin-top: 14px; }
+  table { border-collapse: collapse; width: 100%; font-size: 14px; }
+  th, td { text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--rule); }
+  th { font: 500 11px/1.2 var(--font-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+  td.n { font-family: var(--font-mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .missed { margin: 14px 0 0; font-size: 14px; }
+  .missed a { color: var(--accent); font-family: var(--font-mono); margin-right: 6px; }
+
+  details.key { margin-top: 28px; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 14px 18px; }
+  details.key summary { cursor: pointer; font: 700 20px/1.2 var(--font-display); }
+  .keygrid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(64px, 1fr)); gap: 6px; margin-top: 14px;
+    font: 500 14px/1 var(--font-mono); font-variant-numeric: tabular-nums;
+  }
+  .keygrid span { padding: 8px; border: 1px solid var(--rule); border-radius: 4px; text-align: center; }
+  .keygrid span b { color: var(--accent); }
+  footer { padding-block: 0 40px; color: var(--muted); font-size: 13px; }
+
+  @media (max-width: 480px) {
+    .q { padding: 14px 12px; }
+    .opt { grid-template-columns: 26px 1fr; }
+    .opt .mark { grid-column: 2; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
+</style>
+
+<header class="wrap intro">
+  <p class="eyebrow">URBS 250 · Representation Methods in Urban Studies</p>
+  <h1>Practice Midterm</h1>
+  <p class="lede">Forty multiple-choice questions, one right answer each, built from the topics on the Lecture 4-2 midterm review slides and the facts in your study guide. Questions are grouped in the same order as the review slides.</p>
+  <ul class="facts">
+    <li>40 questions</li>
+    <li>Worth 15% on the real exam</li>
+    <li>Weeks 1–4: lectures, readings, labs</li>
+    <li>Pencil + non-programmable calculator</li>
+  </ul>
+</header>
+
+<div class="bar">
+  <div class="wrap">
+    <div class="bar-row">
+      <div class="score" id="score" aria-live="polite"></div>
+      <div class="controls">
+        <div class="seg" role="group" aria-label="Quiz mode">
+          <button type="button" id="mode-practice" data-mode="practice">Instant feedback</button>
+          <button type="button" id="mode-exam" data-mode="exam">Exam mode</button>
+        </div>
+        <button type="button" class="btn primary" id="submit" hidden>Submit exam</button>
+        <button type="button" class="btn" id="reset">Start over</button>
+      </div>
+    </div>
+    <div class="scalebar" aria-hidden="true">
+      <div class="segments" id="segments"></div>
+      <div class="ticks"><span>0</span><span>10</span><span>20</span><span>30</span><span>40</span></div>
+    </div>
+    <p class="mode-note" id="mode-note"></p>
+  </div>
+</div>
+
+<main class="wrap" id="quiz"></main>
+
+<footer class="wrap">
+  Sources: URBS 250 Lecture 4-2 Midterm Review slides and the URBS 250 Midterm Study Guide. A few explanations draw on points the study guide marks as not on the slides; those are flagged.
+</footer>
+
+<script>
+const SECTIONS = [
+  { id: "map", n: 1, name: "Mapping", lecture: "Lecture 2-1",
+    know: "Definition · two categories of maps and their characteristics · tangible map types · basic map elements · how to read a map (scale, context) · how to lay out a map (required elements, information, balance and hierarchy)" },
+  { id: "concept", n: 2, name: "Concept mapping", lecture: "Lecture 2-1",
+    know: "Definition · the components · why we use them · advantages and disadvantages · applications" },
+  { id: "lynch", n: 3, name: "Lynchian analysis", lecture: "Lecture 2-2",
+    know: "Lynch’s 5 imageability elements · how to define them" },
+  { id: "streets", n: 4, name: "Walking, cycling, transport and streets", lecture: "Lectures 3-1 and 3-2",
+    know: "Designing for cycling · what makes Houten, NL different · hierarchy of streets and roads · street network · street connectivity and measures · pedestrian-friendly streets" },
+  { id: "plans", n: 5, name: "Plans", lecture: "Lectures 4 and 4-2",
+    know: "What a plan is and why we use it · reasons for preparing a plan · the planning process · the three urban plans from class · typical data needs" }
+];
+
+const Q = [
+  // 1 Mapping
+  { s: "map", q: "According to the course definition, maps are:",
+    o: ["Exact, neutral copies of the physical environment",
+        "Abstractions, simplifications and representations of the environment",
+        "Graphical tools for organizing and representing knowledge",
+        "Statements of adopted policy that guide public and private action"], a: 1,
+    e: "The word comes from the Latin <i>mappa mundi</i>, “sheet of the world.” Monmonier calls maps “scaled models of reality.” Option C defines concept maps; option D defines a plan." },
+  { s: "map", q: "What are the two main categories of maps?",
+    o: ["Reference and thematic", "Qualitative and quantitative", "Mental and tangible", "Tangible and virtual"], a: 2,
+    e: "The top split of the map-types tree is <b>mental vs. tangible</b>. Reference vs. thematic is the split <i>under</i> tangible, and virtual maps hang off the tangible branch." },
+  { s: "map", q: "Which set of traits describes a tangible map?",
+    o: ["Exists mainly in our minds and is highly subjective",
+        "Reflects one person’s experience and is usually not accurate",
+        "Is similar to bubble diagrams and mind maps",
+        "Can be viewed by more than one person, presents the same information to each viewer, and is mostly objective"], a: 3,
+    e: "Tangible maps are shareable, consistent, usually accurate and mostly objective (e.g. the 1996 Montreal land-use map). Options A–C all describe <b>mental</b> maps." },
+  { s: "map", q: "On the map-types tree, tangible maps branch into:",
+    o: ["Reference and thematic maps, with virtual maps on a dashed branch",
+        "Mental and cognitive maps",
+        "Single-variable and multivariable maps",
+        "Concept maps and mind maps"], a: 0,
+    e: "Tangible → reference vs. thematic (virtual, e.g. GapMinder, on a dashed branch). Thematic → qualitative vs. quantitative. Quantitative → single variable vs. multivariable." },
+  { s: "map", q: "A map of Ville-Marie that shows population density and median household income together is best classified as a:",
+    o: ["Qualitative reference map", "Quantitative, multivariable thematic map", "Mental map", "Qualitative, single-variable map"], a: 1,
+    e: "It shows a theme (not general reference), the data are numbers (quantitative), and there are two variables at once (multivariable)." },
+  { s: "map", q: "Which of these is NOT one of the 8 basic map elements?",
+    o: ["North arrow", "Legend", "Glossary", "Source"], a: 2,
+    e: "The 8 elements: title & subtitle, legend, scale, north arrow, date, source, geographic information, thematic information. A glossary (like a table of contents) belongs to a <b>plan document’s</b> structure." },
+  { s: "map", q: "On a 1:25,000 map, two metro stations are 6 cm apart. How far apart are they in reality?",
+    o: ["150 m", "1.5 km", "15 km", "4.2 km"], a: 1,
+    e: "Real distance = map distance × scale denominator: 6 cm × 25,000 = 150,000 cm. Since 100,000 cm = 1 km, that is <b>1.5 km</b>. (Calculation method is general knowledge, not on the slides; you are allowed a calculator.)" },
+  { s: "map", q: "In the Crestview connector example, four maps of the same place supported four different conclusions. What is the main lesson?",
+    o: ["Only government maps should be trusted",
+        "Traffic counts are the most objective kind of map data",
+        "Larger-scale maps are always more accurate",
+        "Maps are not neutral: the mapmaker’s goal decides what the map shows"], a: 3,
+    e: "The City mapped property values (keep costs low), the African American community mapped % African American (neighbourhood integrity), and Jaki & Susan mapped traffic counts, then a Social and Environmental Justice Sensitivity map. Each map served its maker’s goal." },
+  { s: "map", q: "When laying out a map, using colour to create a visual and intellectual hierarchy applies which design fundamental?",
+    o: ["Conventions", "Aesthetic", "Adapted to a specific public", "Structured"], a: 3,
+    e: "The 6 fundamentals and their glosses: Conventions (north at top, water is blue) · Visual (rules of visual perception) · <b>Structured</b> (visual and intellectual hierarchy, e.g. colour) · Aesthetic (if it’s not attractive, it won’t be used) · Clear and coherent (comprehensive vs. clear) · Adapted to a specific public (expert vs. novice)." },
+
+  // 2 Concept mapping
+  { s: "concept", q: "Concept maps are best defined as:",
+    o: ["Scaled models of reality",
+        "Graphical tools for organizing and representing knowledge",
+        "Maps that show a single quantitative variable",
+        "Cognitive maps that exist only in the mind"], a: 1,
+    e: "That is the definition on the slide. Option A is Monmonier’s definition of a map, not a concept map." },
+  { s: "concept", q: "In concept-map semiology, lines (arrows) act as:",
+    o: ["Nouns that name the key ideas",
+        "Modifiers that show size and proximity",
+        "Verbs that show the relationship between two concepts",
+        "Landmarks used for orientation"], a: 2,
+    e: "Concepts = nouns (key ideas). Lines = verbs (relationships). Propositions = meaningful statements linking concepts. Modifiers = size and proximity." },
+  { s: "concept", q: "Two or more concepts joined by linking words to form a meaningful statement is called a:",
+    o: ["Proposition", "Modifier", "Node", "Crosslink"], a: 0,
+    e: "In Novak’s model, concepts + linking words = propositions. Crosslinks are a different thing: they show interrelationships between parts of a hierarchical map." },
+  { s: "concept", q: "In a concept map, the size of a shape and how close shapes sit to each other are called:",
+    o: ["Concepts", "Lines", "Propositions", "Modifiers"], a: 3,
+    e: "Modifiers = size and proximity. Bigger or closer shapes signal importance or a stronger relationship." },
+  { s: "concept", q: "Which is NOT one of the five reasons for using concept maps?",
+    o: ["Generate ideas (brainstorming)",
+        "Produce accurate, to-scale measurements of a site",
+        "Communicate complex ideas",
+        "Assess understanding or diagnose misunderstanding"], a: 1,
+    e: "The five reasons: generate ideas · design complex structures · communicate complex ideas · aid learning by integrating new and old knowledge · assess understanding or diagnose misunderstanding. Concept maps are <b>not</b> to scale." },
+  { s: "concept", q: "Which of the following is a disadvantage of concept maps?",
+    o: ["They cannot show relationships between ideas",
+        "They are slow and difficult to revise",
+        "They are subjective and not drawn to scale",
+        "They are only useful for brainstorming"], a: 2,
+    e: "Disadvantages: subjective, can get cluttered, not to scale, symbols must be learned, takes practice. Being quick to revise and showing relationships are <b>advantages</b>. (The study guide marks advantages and disadvantages as general knowledge, not slide text.)" },
+
+  // 3 Lynch
+  { s: "lynch", q: "Kevin Lynch’s five elements of imageability are:",
+    o: ["Paths, edges, districts, nodes, landmarks",
+        "Paths, corridors, zones, nodes, gateways",
+        "Streets, edges, neighbourhoods, squares, monuments",
+        "Paths, edges, districts, gateways, landmarks"], a: 0,
+    e: "From <i>The Image of the City</i> (1960, based on Boston). Hook: “People Eat Delicious Noodles Lately.” Corridors, zones and gateways are made-up distractors." },
+  { s: "lynch", q: "Which Lynch element is defined as the channels along which people move, and is the most commonly experienced element?",
+    o: ["Paths", "Edges", "Nodes", "Districts"], a: 0,
+    e: "Paths (streets, sidewalks, bike paths, transit routes) structure daily travel, so they are the most commonly experienced element and the primary framework for movement and wayfinding." },
+  { s: "lynch", q: "Under Lynch’s framework, a highway, a railway line or a river is best classified as a(n):",
+    o: ["Path", "Node", "Edge", "District"], a: 2,
+    e: "Edges are boundaries that separate one area from another and can act as barriers or transition zones. Highways and railways are listed as <b>edges</b>, not paths (e.g. the Turcot interchange “non-space”)." },
+  { s: "lynch", q: "A metro station, a public square and a shopping centre are all examples of which element?",
+    o: ["Nodes", "Landmarks", "Districts", "Edges"], a: 0,
+    e: "Nodes are strategic focal points where people gather, make decisions, or connect with other routes. A shopping centre is a node, not a district or landmark." },
+  { s: "lynch", q: "What is the main purpose of districts?",
+    o: ["To provide the primary framework for movement",
+        "To organize the city into meaningful regions or neighbourhoods",
+        "To help people locate themselves from a distance",
+        "To act as barriers between areas"], a: 1,
+    e: "Districts are areas with shared characteristics recognized as distinct sections (downtown, Chinatown, a campus). A = paths, C = landmarks, D = edges." },
+  { s: "lynch", q: "A suburb where every building looks alike, and public and private buildings are indistinguishable, leaves people unable to “get their bearings.” Which element is missing?",
+    o: ["Paths", "Edges", "Districts", "Landmarks"], a: 3,
+    e: "Landmarks are prominent features, visible from a distance, used as reference points. The Bentley et al. (1985) cartoon shows landmarks failing when important public buildings look like ordinary private ones." },
+
+  // 4 Walking, cycling, streets
+  { s: "streets", q: "What makes Houten, Netherlands different from a traditional city?",
+    o: ["Cars get the direct central routes while bikes use an outer ring",
+        "Cars are banned from the town entirely",
+        "It has no public transit, only bicycles",
+        "Cars use an outer ring road, while bikes and pedestrians get the direct central routes"], a: 3,
+    e: "Houten reverses the traditional city, which gives cars the direct routes. Its map shows red = main bike paths, orange = shared paths, yellow = secondary paths, and the train station holds over 3,000 bicycles. (The ring-road explanation is flagged as not on the slides.)" },
+  { s: "streets", q: "Which of these is NOT a way of designing with cycling in mind shown in the lecture?",
+    o: ["Dedicated, coloured bike lanes",
+        "Bike racks on buses",
+        "Secure locking and mass bike parking",
+        "Widening car lanes so drivers can pass cyclists"], a: 3,
+    e: "The slides showed dedicated coloured lanes, mass bike parking, bike racks on buses, secure locking and clear signage." },
+  { s: "streets", q: "Moving DOWN the street hierarchy, from arterials to local streets:",
+    o: ["Mobility increases and access decreases",
+        "Both mobility and access increase",
+        "Mobility decreases and access increases",
+        "Design speed and trip length increase"], a: 2,
+    e: "Walter Kulash: going down the hierarchy, mobility falls (less continuity, lower design speed, shorter trips) and access rises (more cross streets, on-street parking, fronting buildings). Arterials = high mobility, low access." },
+  { s: "streets", q: "A collector street (a “local distributor”) corresponds to which character street, with mixed uses and active frontages?",
+    o: ["Main road", "Avenue or boulevard", "High street", "Mews or courtyard"], a: 2,
+    e: "Principal arterial = primary distributor = main road · Minor arterial = district distributor = avenue/boulevard · <b>Collector = local distributor = high street</b> · Local = access road = street/square · Local = cul-de-sac = mews/courtyard." },
+  { s: "streets", q: "Which of these is NOT one of the street network patterns covered in class?",
+    o: ["Grid and squares", "Web", "Radial", "Hexagonal"], a: 3,
+    e: "The six patterns: grid, grid and squares, web, radial, curvilinear, irregular." },
+  { s: "streets", q: "Street connectivity (Kulash) is measured by:",
+    o: ["The number of cars per hour",
+        "The spacing between connected streets, where shorter spacing means more connected",
+        "The total width between buildings",
+        "The number of cul-de-sacs per neighbourhood"], a: 1,
+    e: "Connectivity is measured by spacing between connected streets: traditional 400–600 ft, major direction (interior) 1,000 ft, major direction (perimeter) 1,000–2,000 ft, single entry none." },
+  { s: "streets", q: "In a traditional street network, connected streets are spaced about:",
+    o: ["400–600 ft", "1,000 ft", "1,000–2,000 ft", "There are no connected streets"], a: 0,
+    e: "Traditional = 400–600 ft. Note the trap: even in the major-direction patterns, pedestrian and bike connections are still spaced 400–600 ft." },
+  { s: "streets", q: "Pedestrian-friendly streets limit speeds to 30 km/h (20 mph) in order to reduce:",
+    o: ["Accident severity, accident frequency and environmental impact",
+        "Parking demand, road width and construction costs",
+        "Noise only",
+        "Driver travel time and bus delays"], a: 0,
+    e: "30 km/h cuts three things: severity, frequency and environmental impact." },
+  { s: "streets", q: "A woonerf (a “HomeZone”) is:",
+    o: ["A pedestrian-only shopping mall",
+        "A “street for living,” shared by pedestrians, cyclists and cars",
+        "A dedicated bus lane",
+        "A cul-de-sac with a turnaround"], a: 1,
+    e: "Woonerf means “street for living.” It is a shared street, not a pedestrian mall." },
+  { s: "streets", q: "A street carries about 1,200 cars per hour. What crossing provision does it need?",
+    o: ["Many informal opportunities to cross", "A designed crossing", "A signalled crossing", "No crossing: pedestrians should use another street"], a: 2,
+    e: "Up to 500 cars/hour: many opportunities to cross. 500–1,000: a designed crossing. Over 1,000: a <b>signalled</b> crossing." },
+
+  // 5 Plans
+  { s: "plans", q: "Which of these is NOT one of the three things a plan is for?",
+    o: ["A statement of adopted policy",
+        "Guide public and private actions",
+        "Inform decision makers about long-range community goals",
+        "Forming “treaties”"], a: 3,
+    e: "A plan is for: policy, guide, inform (P-G-I). “Forming treaties” is one of the six <b>reasons for preparing</b> an urban design plan, a common mix-up." },
+  { s: "plans", q: "Which of these is one of the six reasons for preparing an urban design plan?",
+    o: ["Marketing sites or areas",
+        "Setting property tax rates",
+        "Replacing public consultation",
+        "Freezing land uses permanently"], a: 0,
+    e: "The six reasons: forging visions · public support · devising strategies · creating good locations · <b>marketing sites or areas</b> · forming “treaties.”" },
+  { s: "plans", q: "In the nine-step planning process, which step comes directly after “collect and interpret data”?",
+    o: ["State goals, objectives and priorities", "Prepare plans", "Identify issues and options", "Review and adopt plans"], a: 1,
+    e: "1 Identify issues and options → 2 State goals, objectives and priorities → 3 Collect and interpret data → <b>4 Prepare plans</b> → 5 Draft implementation programs → 6 Evaluate impacts → 7 Review and adopt plans → 8 Review and adopt programs → 9 Administer programs." },
+  { s: "plans", q: "What happens after the last step, “administer implementation programs”?",
+    o: ["The cycle returns to step 1 (identify issues and options), with recycling steps such as revising objectives and collecting new data",
+        "The plan expires and is archived",
+        "Council writes new goals without review",
+        "Data collection is skipped in the next round"], a: 0,
+    e: "The planning process is a cycle. Recycling steps include identifying new issues, revising objectives, collecting new data, revising plans and programs, re-evaluating impacts and amending programs." },
+  { s: "plans", q: "Which plan’s purpose heading is “Making Choices,” with a 30-year time frame?",
+    o: ["Montreal Master Plan", "Toronto Official Plan", "Vancouver Greenest City 2020 Action Plan", "PUM 2050"], a: 1,
+    e: "Montreal = “Vision of the future” (10 years) · <b>Toronto = “Making Choices” (30 years)</b> · Vancouver = “A Bright Green Future” (10 years, to 2020)." },
+  { s: "plans", q: "Which plan calls itself “the reference guide for all planning and development” and a “social contract” around common goals?",
+    o: ["Toronto Official Plan", "Vancouver Greenest City 2020 Action Plan", "Montreal Master Plan", "Ottawa Climate Change Master Plan"], a: 2,
+    e: "“Social contract” is Montreal. “Getting the fundamentals right” is Toronto. “A road map for citizens, businesses and governments” is Vancouver. The MMP has 7 objectives." },
+  { s: "plans", q: "Vancouver’s Greenest City 2020 Action Plan is best described as:",
+    o: ["A 30-year plan that manages growth through Centres with Secondary Plans",
+        "A plan with 7 objectives, starting with complete living environments",
+        "A metropolitan land-use plan for the whole region",
+        "A road map with 10 goals for 2020, aiming to make Vancouver the global leader in sustainability"], a: 3,
+    e: "Its 10 goals run from green economy to local food. Key figure: the GHG donut, where buildings are 55% and light-duty vehicles 32%. A = Toronto, B = Montreal." },
+  { s: "plans", q: "Typical data needs for a plan come in which three media?",
+    o: ["Maps, tables and graphs, images",
+        "Surveys, interviews, focus groups",
+        "Legends, scales, north arrows",
+        "Budgets, bylaws, contracts"], a: 0,
+    e: "Maps (natural environment, land use, density, transportation, housing, utilities); tables and graphs (local economy, carbon-emitting sectors); and images." },
+  { s: "plans", q: "“Increase public transit use by 10% over the next year” is an example of:",
+    o: ["A goal", "A vision", "An objective", "A plan core"], a: 2,
+    e: "A goal is a general statement of a desired future (“increase public transit use”). An objective is a measurable advancement of a goal. It has a number and a deadline." }
+];
+
+const LETTERS = ["A", "B", "C", "D"];
+const STORE = "urbs250-quiz-v1";
+let state = { mode: "practice", picks: {}, submitted: false };
+try { const saved = JSON.parse(localStorage.getItem(STORE)); if (saved && saved.picks) state = saved; } catch (e) {}
+function save() { try { localStorage.setItem(STORE, JSON.stringify(state)); } catch (e) {} }
+
+const quiz = document.getElementById("quiz");
+
+function revealed(i) {
+  return state.mode === "practice" ? state.picks[i] !== undefined : state.submitted;
+}
+
+function build() {
+  let html = "";
+  let num = 0;
+  for (const sec of SECTIONS) {
+    html += `<section class="topic" id="${sec.id}">
+      <div class="topic-head">
+        <p class="eyebrow">Topic ${sec.n} of 5 · ${sec.lecture}</p>
+        <h2>${sec.name}</h2>
+        <p class="know"><strong>Review slide says know:</strong> ${sec.know}</p>
+      </div><div class="qlist">`;
+    Q.forEach((q, i) => {
+      if (q.s !== sec.id) return;
+      num = i + 1;
+      html += `<article class="q" id="q${num}">
+        <div class="q-top"><span class="qnum">${num}</span><p class="qtext">${q.q}</p></div>
+        <ul class="opts">${q.o.map((t, j) => `<li><button type="button" class="opt" id="q${num}-${LETTERS[j]}" data-q="${i}" data-o="${j}">
+          <span class="letter">${LETTERS[j]}</span><span>${t}</span><span class="mark"></span></button></li>`).join("")}</ul>
+        <p class="explain" hidden></p>
+      </article>`;
+    });
+    html += `</div></section>`;
+  }
+  html += `<div class="results" id="results" hidden></div>
+    <details class="key"><summary>Answer key</summary><div class="keygrid">
+      ${Q.map((q, i) => `<span>${i + 1} <b>${LETTERS[q.a]}</b></span>`).join("")}
+    </div></details>`;
+  quiz.innerHTML = html;
+  document.getElementById("segments").innerHTML = Q.map(() => "<span></span>").join("");
+}
+
+function render() {
+  const segs = document.getElementById("segments").children;
+  let answered = 0, correct = 0, checked = 0;
+  Q.forEach((q, i) => {
+    const pick = state.picks[i];
+    const show = revealed(i);
+    if (pick !== undefined) answered++;
+    if (show && pick !== undefined) { checked++; if (pick === q.a) correct++; }
+    const card = document.getElementById("q" + (i + 1));
+    card.querySelectorAll(".opt").forEach((btn, j) => {
+      btn.className = "opt";
+      const mark = btn.querySelector(".mark");
+      mark.textContent = "";
+      btn.setAttribute("aria-pressed", pick === j ? "true" : "false");
+      if (show) {
+        btn.disabled = true;
+        if (j === q.a) { btn.classList.add("is-correct"); mark.textContent = "Answer"; }
+        else if (j === pick) { btn.classList.add("is-wrong"); mark.textContent = "Your pick"; }
+      } else {
+        btn.disabled = false;
+        if (pick === j) btn.classList.add("picked");
+      }
+    });
+    const ex = card.querySelector(".explain");
+    if (show) {
+      const verdict = pick === undefined ? "Not answered." : pick === q.a ? "Correct." : "Not quite.";
+      ex.innerHTML = `<b>${verdict} Answer: ${LETTERS[q.a]}.</b> ${q.e}`;
+      ex.hidden = false;
+    } else ex.hidden = true;
+    segs[i].className = show && pick !== undefined ? (pick === q.a ? "good" : "bad") : pick !== undefined ? "done" : "";
+  });
+
+  const scoreEl = document.getElementById("score");
+  if (state.mode === "practice") {
+    scoreEl.innerHTML = `<b>${correct}</b>/${checked} correct · ${answered} of 40 answered`;
+  } else if (state.submitted) {
+    scoreEl.innerHTML = `<b>${correct}</b>/40 · ${Math.round(correct / 40 * 100)}%`;
+  } else {
+    scoreEl.innerHTML = `<b>${answered}</b>/40 answered`;
+  }
+
+  document.getElementById("mode-practice").setAttribute("aria-pressed", state.mode === "practice");
+  document.getElementById("mode-exam").setAttribute("aria-pressed", state.mode === "exam");
+  const submit = document.getElementById("submit");
+  submit.hidden = state.mode !== "exam" || state.submitted;
+  document.getElementById("mode-note").textContent = state.mode === "practice"
+    ? "Instant feedback: each answer is checked as soon as you pick it. Switching modes clears your answers."
+    : state.submitted
+      ? "Exam submitted. Press Start over to retake."
+      : "Exam mode: answers stay hidden until you submit, like the real midterm. You can change picks before submitting.";
+
+  const done = state.mode === "practice" ? answered === 40 : state.submitted;
+  const res = document.getElementById("results");
+  if (done) {
+    const rows = SECTIONS.map(sec => {
+      const idx = Q.map((q, i) => i).filter(i => Q[i].s === sec.id);
+      const ok = idx.filter(i => state.picks[i] === Q[i].a).length;
+      return `<tr><td>${sec.name}</td><td class="n">${ok} / ${idx.length}</td><td class="n">${Math.round(ok / idx.length * 100)}%</td></tr>`;
+    }).join("");
+    const missed = Q.map((q, i) => i).filter(i => state.picks[i] !== Q[i].a);
+    res.innerHTML = `<p class="eyebrow">Results</p>
+      <div class="big">${correct} / 40</div>
+      <h2>${Math.round(correct / 40 * 100)}% ${correct >= 34 ? "· exam ready" : correct >= 28 ? "· close, review your misses" : "· reread the weak topics below"}</h2>
+      <div class="tbl-wrap"><table><thead><tr><th>Topic</th><th>Score</th><th>%</th></tr></thead><tbody>${rows}</tbody></table></div>
+      ${missed.length ? `<p class="missed">Review: ${missed.map(i => `<a href="#q${i + 1}">Q${i + 1}</a>`).join("")}</p>` : `<p class="missed">No misses. Nice work.</p>`}`;
+    res.hidden = false;
+  } else res.hidden = true;
+}
+
+quiz.addEventListener("click", e => {
+  const btn = e.target.closest(".opt");
+  if (!btn || btn.disabled) return;
+  const i = +btn.dataset.q, j = +btn.dataset.o;
+  if (state.mode === "practice" && state.picks[i] !== undefined) return;
+  if (state.mode === "exam" && state.submitted) return;
+  state.picks[i] = j;
+  save(); render();
+});
+
+document.querySelectorAll(".seg button").forEach(b => b.addEventListener("click", () => {
+  if (state.mode === b.dataset.mode) return;
+  state = { mode: b.dataset.mode, picks: {}, submitted: false };
+  save(); render();
+}));
+
+document.getElementById("submit").addEventListener("click", () => {
+  state.submitted = true; save(); render();
+  document.getElementById("results").scrollIntoView({ behavior: "smooth", block: "start" });
+});
+
+document.getElementById("reset").addEventListener("click", () => {
+  state = { mode: state.mode, picks: {}, submitted: false };
+  save(); render();
+  window.scrollTo({ top: 0 });
+});
+
+build();
+render();
+</script>
