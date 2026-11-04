@@ -6,7 +6,11 @@ const path = require("path");
 const pptxgen = require("pptxgenjs");
 
 const data = JSON.parse(fs.readFileSync(path.join(__dirname, "data/group7_submissions.json"), "utf8"));
-const OUT = path.join(__dirname, "Group7_Office_MidRise_Summary.pptx");
+// ONLY="Skaliks Aparicio" node build_deck.js -> just that member's example slide, as its own file
+const ONLY = process.env.ONLY || null;
+const OUT = ONLY
+  ? path.join(__dirname, `${ONLY.replace(/\s+/g, "_")}_Example_Slide.pptx`)
+  : path.join(__dirname, "Group7_Office_MidRise_Summary.pptx");
 
 // ---- palette: mirrors the course deck (charcoal ground, navy table header, lavender rows) ----
 const BG = "1E1E1E";
@@ -89,7 +93,7 @@ function drawTypologyPlan(slide, x, y, scale, labels = true) {
 }
 
 // ---------- Slide 1: cover ----------
-{
+if (!ONLY) {
   const s = pres.addSlide({ masterName: "COURSE_DARK" });
   s.addText("URBS 250  ·  GROUP 7  ·  BUILDING TYPOLOGY", { x: 0.6, y: 0.55, w: 6.2, h: 0.35, fontFace: FONT, fontSize: 12, bold: true, color: ACCENT, charSpacing: 2, isTextBox: true, margin: 0 });
   s.addText("Office Mid-Rise", { x: 0.6, y: 0.95, w: 6.4, h: 0.95, fontFace: FONT, fontSize: 44, bold: true, color: WHITE, isTextBox: true, margin: 0 });
@@ -116,7 +120,7 @@ function drawTypologyPlan(slide, x, y, scale, labels = true) {
 }
 
 // ---------- Slide 2: summary table ----------
-{
+if (!ONLY) {
   const s = pres.addSlide({ masterName: "COURSE_DARK" });
   s.addText(
     [
@@ -158,7 +162,7 @@ function drawTypologyPlan(slide, x, y, scale, labels = true) {
 }
 
 // ---------- Slides 3+: one example per member ----------
-data.members.forEach((m) => {
+data.members.filter((m) => !ONLY || m.last === ONLY).forEach((m) => {
   const d = subFor(m);
   const s = pres.addSlide({ masterName: "COURSE_DARK" });
   s.addText(fullName(m), { x: 0.5, y: 0.5, w: 9.0, h: 0.6, fontFace: FONT, fontSize: 30, bold: true, color: WHITE, isTextBox: true, margin: 0 });
