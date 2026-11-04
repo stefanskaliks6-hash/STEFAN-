@@ -1,0 +1,40 @@
+{
+  "course": "URBS 250 – Representation Methods in Urban Studies",
+  "group": 7,
+  "building_type": "Office Mid-Rise",
+  "typology_note": "60,000 SF (≈5,574 m²) site, 150' × 400', structured parking (lecture 6-2, slide 12)",
+  "presenting": [],
+  "members": [
+    {"first": "Kacy", "last": "Chan"},
+    {"first": "Luna", "last": "Cretu"},
+    {"first": "Giancarlo", "last": "Di Valerio"},
+    {"first": "Simon", "last": "Fenech"},
+    {"first": "Aiyumi", "last": "Gillis"},
+    {"first": "Henri", "last": "Hurel"},
+    {"first": "Jacob", "last": "Lubelchek"},
+    {"first": "Ava", "last": "Maich"},
+    {"first": "Nour", "last": "Nawar"},
+    {"first": "Ann Franchesca", "last": "Ramos"},
+    {"first": "Vasilios", "last": "Schipprack"},
+    {"first": "Jilvan", "last": "Sedighi"},
+    {"first": "Alizeh", "last": "Shami"},
+    {"first": "Stefan", "last": "Skaliks Aparicio"}
+  ],
+  "submissions": {
+    "_how_to_fill": "Key = member's last name. Numbers only (no $ or commas). Leave null if a member did not submit.",
+    "Chan":             {"address": null, "lot_m2": null, "lot_value": null, "building_value": null, "property_total": null, "gfa_m2": null, "previous_assessment": null, "floors": null, "year_built": null},
+    "Cretu":            {"address": null, "lot_m2": null, "lot_value": null, "building_value": null, "property_total": null, "gfa_m2": null, "previous_assessment": null, "floors": null, "year_built": null},
+    "Di Valerio":       {"address": null, "lot_m2": null, "lot_value": null, "building_value": null, "property_total": null, "gfa_m2": null, "previous_assessment": null, "floors": null, "year_built": null},
+    "Fenech":           {"address": null, "lot_m2": null, "lot_value": null, "building_value": null, "property_total": null, "gfa_m2": null, "previous_assessment": null, "floors": null, "year_built": null},
+    "Gillis":           {"address": null, "lot_m2": null, "lot_value": null, "building_value": null, "property_total": null, "gfa_m2": null, "previous_assessment": null, "floors": null, "year_built": null},
+    "Hurel":            {"address": null, "lot_m2": null, "lot_value": null, "building_value": null, "property_total": null, "gfa_m2": null, "previous_assessment": null, "floors": null, "year_built": null},
+    "Lubelchek":        {"address": null, "lot_m2": null, "lot_value": null, "building_value": null, "property_total": null, "gfa_m2": null, "previous_assessment": null, "floors": null, "year_built": null},
+    "Maich":            {"address": null, "lot_m2": null, "lot_value": null, "building_value": null, "property_total": null, "gfa_m2": null, "previous_assessment": null, "floors": null, "year_built": null},
+    "Nawar":            {"address": null, "lot_m2": null, "lot_value": null, "building_value": null, "property_total": null, "gfa_m2": null, "previous_assessment": null, "floors": null, "year_built": null},
+    "Ramos":            {"address": null, "lot_m2": null, "lot_value": null, "building_value": null, "property_total": null, "gfa_m2": null, "previous_assessment": null, "floors": null, "year_built": null},
+    "Schipprack":       {"address": null, "lot_m2": null, "lot_value": null, "building_value": null, "property_total": null, "gfa_m2": null, "previous_assessment": null, "floors": null, "year_built": null},
+    "Sedighi":          {"address": null, "lot_m2": null, "lot_value": null, "building_value": null, "property_total": null, "gfa_m2": null, "previous_assessment": null, "floors": null, "year_built": null},
+    "Shami":            {"address": null, "lot_m2": null, "lot_value": null, "building_value": null, "property_total": null, "gfa_m2": null, "previous_assessment": null, "floors": null, "year_built": null},
+    "Skaliks Aparicio": {"address": null, "lot_m2": null, "lot_value": null, "building_value": null, "property_total": null, "gfa_m2": null, "previous_assessment": null, "floors": null, "year_built": null}
+  }
+}
