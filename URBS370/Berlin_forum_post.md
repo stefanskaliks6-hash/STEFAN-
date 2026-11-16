@@ -2,7 +2,7 @@
 
 **1. The system at a glance**
 
-Most Berliners rent, increasingly from large corporate landlords. In 2020 Berlin's *Mietendeckel* froze rents and ordered cuts to excessive ones. In April 2021 the Federal Constitutional Court voided it, not because rent caps are illegitimate but because federal law already regulates rents "conclusively" (Holm, 2021). Campaigners turned from prices to ownership under Article 15 of the Basic Law. Socialization is **not** policy in force. A majority backed the non-binding 2021 referendum, and a March 2026 framework law takes effect in 2028 but transfers nothing, and no bill exists (Schüffner & Dauke, 2026).
+Most Berliners rent, increasingly from large corporate landlords. In 2020 Berlin's *Mietendeckel* froze rents and ordered cuts to excessive ones. In April 2021 the Federal Constitutional Court voided it, not because rent caps are illegitimate but because federal law already regulates rents "conclusively" (Holm, 2021). Campaigners turned from prices to ownership under Article 15 of the Basic Law. Socialization is **not** policy in force. A majority backed the non-binding 2021 referendum. A March 2026 framework law takes effect in 2028 but transfers nothing, and no bill exists (Schüffner & Dauke, 2026).
 
 **2. What holds it together**
 
