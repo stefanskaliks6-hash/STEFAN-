@@ -1,30 +1,28 @@
 # Berlin: When the rent cap hit a constitutional wall, the fight moved from prices to ownership
 
-**The policy choice**
+**1. The system at a glance**
 
-Berlin, where about 84% of households rent (Deutscher Mieterbund, 2025), has tried two tools that Canada treats as unthinkable. The first, the *Mietendeckel* (2020–2021), froze rents at 2019 levels and forced landlords to cut excessive rents. The Federal Constitutional Court struck it down in 2021, ruling not against rent caps as such but that federal civil law already regulates rents "conclusively," leaving the Land no power to act (BVerfG, 2021; Holm, 2021). The second targets ownership instead of prices: Article 15 of the Basic Law allows housing to be transferred into public ownership. Both answer rising rents and displacement driven by large corporate landlords.
+About 84% of Berlin households rent (Deutscher Mieterbund, 2025), increasingly from listed corporate landlords. Rents are governed by federal civil law. Berlin has tried two tools Canada treats as unthinkable. The *Mietendeckel* (2020–2021) froze rents at 2019 levels and forced landlords to cut excessive rents. In 2021 the Federal Constitutional Court voided it, not because rent caps are illegitimate but because federal law already regulates rents "conclusively" (BVerfG, 2021; Holm, 2021). Campaigners then turned to ownership: Article 15 of the Basic Law permits transferring housing into public ownership. Socialization is **not** in force: in 2021, 59.1% of voters backed a non-binding referendum (Drohsel, 2023). A March 2026 framework law takes effect in 2028 but transfers nothing by itself (Schüffner & Dauke, 2026).
 
-Socialization is **not** policy in force. In 2021, 59.1% of voters backed a non-binding referendum (Drohsel, 2023). A March 2026 framework law takes effect in 2028 but transfers nothing by itself (Schüffner & Dauke, 2026).
+**2. What holds it together**
 
-**How it is organized**
+Three supports hold it up. *Legal:* Article 15 has never been used and requires an act of parliament, proportionality and compensation (Schüffner & Dauke, 2026). *Institutional:* the 2021 proposal targets private firms owning over 3,000 Berlin flats (cooperatives exempt), transferring them to a public-law institution governed with tenants and staff, with compensation "significantly below market value" (Schüffner & Dauke, 2026). A 2023 expert commission found this constitutionally feasible (Drohsel, 2023). *Political:* after the Left won the September 2026 election, its coalition-talks paper with the SPD and Greens raised the threshold to 10,000 units and exempted buildings completed after 2021. It also caps compensation at €16 billion and promises a bill in mid-2028 (Mietervereinigung Berlin, 2026). The weak point is authority: the federal government may legislate to block it, and the Constitutional Court will likely decide (Schüffner & Dauke, 2026).
 
-The 2021 proposal targets private firms owning over 3,000 Berlin flats (cooperatives exempt). The flats would go to a public-law institution governed with tenants and staff, and owners would receive compensation "significantly below market value" (Schüffner & Dauke, 2026). In 2023 an expert commission found this constitutionally feasible (Drohsel, 2023). After the Left won the September 2026 election, its coalition-talks paper with the SPD and Greens raises the threshold to 10,000 units, exempts buildings completed after 2021, caps compensation at €16 billion and promises a bill in mid-2028 (Mietervereinigung Berlin, 2026). Authority is contested: the federal government may legislate to block it, and the Constitutional Court will likely decide (Schüffner & Dauke, 2026).
+**3. Who benefits, who bears the costs**
 
-**Who benefits, who bears the costs?**
+Sitting tenants would gain security and a voice in management; shareholders would lose expected returns; taxpayers would carry the compensation debt, illustratively €40 billion, in a city already dependent on fiscal transfers (Kraemer, 2026).
 
-Sitting tenants would gain security and a voice in management; shareholders would lose expected returns; taxpayers would carry the compensation debt, which LBBW estimates at an illustrative €40 billion, in a city already dependent on fiscal transfers from other states (Kraemer, 2026).
+The core trade-off is between insiders and outsiders. Socialization protects current tenants but adds no homes, and critics say it deters new investment (Kraemer, 2026). The 2026 compromise shows this: higher thresholds and new-build exemptions cut cost and legal risk but exclude more tenants. Legal risk falls on tenants too: when the Mietendeckel was voided, they suddenly owed back rent (Holm, 2021).
 
-The core trade-off is between insiders and outsiders. Socialization protects current tenants but adds no homes, and critics say it deters new investment (Kraemer, 2026). The 2026 compromise shows the tension: higher thresholds and new-build exemptions lower cost and legal risk but leave out more tenants. Legal risk falls on tenants too: when the Mietendeckel was voided, they suddenly owed back rent (Holm, 2021).
+**4. Could it work here, and should it?**
 
-**Could it work here, and should it?**
-
-*Feasibility:* The legal picture is reversed in Canada. Tenancy is provincial, and the Charter does not guarantee property rights. Québec already regulates sitting tenants' rent increases through the Tribunal administratif du logement (TAL, 2025). However, the Civil Code (art. 952) and Québec's 2023 expropriation reform require compensation at market value (Gouvernement du Québec, 2023). A transfer below market value would need an explicit act of the National Assembly. Montréal's fragmented plex ownership also means size thresholds would capture few units.
+*Feasibility:* Canada's legal picture is reversed. Tenancy is provincial, and the Charter does not guarantee property rights. Québec already regulates rent increases through the Tribunal administratif du logement (TAL, 2025). However, the Civil Code (art. 952) and Québec's 2023 expropriation reform require compensation at market value (Gouvernement du Québec, 2023). Below-market transfer would need an explicit act of the National Assembly. Montréal's fragmented plex ownership means size thresholds would capture few units.
 
 *Political barriers:* Québec has no binding citizen-initiated referendum, and Montréal depends on Québec for its powers and its funding.
 
 *Desirability:* Montréal already runs a market-price version. Using its right of first refusal, the city bought about 30 buildings with more than 700 flats in Côte-des-Neiges for $103.8 million, now managed by the OMHM (Ville de Montréal, 2024). At scale, this would challenge what Hulchanski (2006) calls Canada's dual housing system, in which non-market housing is a residual sector. But without new building, buying only reshuffles scarcity.
 
-**Conclusion: requires major reform.** Buying at market price is possible with existing tools. Reaching Montréal's 20% non-market goal needs stable provincial and federal acquisition funding. Berlin-style socialization below market value is currently unlikely. Berlin shows that private-market ownership of rental housing is a choice, not a necessity.
+**Conclusion: requires major reform.** Buying at market price is possible with existing tools. Reaching Montréal's 20% non-market goal needs stable provincial and federal funding. Berlin-style socialization below market value is currently unlikely. Berlin shows that private-market ownership of rental housing is a choice, not a necessity.
 
 ---
 
