@@ -6,7 +6,12 @@ so 1 m = 5 mm on paper. Print at 100% / "actual size" to keep the scale.
 import math
 import os
 
-OUT = os.path.dirname(os.path.abspath(__file__))
+OUT = os.environ.get("OUTDIR") or os.path.dirname(os.path.abspath(__file__))
+# Title-block details (override with environment variables for another student)
+STUDENT = os.environ.get("STUDENT", "Stefan Skaliks")
+LAB = os.environ.get("LAB", "Lab C")
+DATE = os.environ.get("DATE", "Nov 18, 2026")
+SUBAREA = os.environ.get("SUBAREA", "1")
 W, H = 431.8, 279.4          # sheet size, mm
 S = 5.0                      # 1:200 -> 5 mm per metre
 FF = 3.0                     # floor-to-floor height, m
@@ -114,11 +119,11 @@ def frame(sh, title, drawing, sheet_no, scale="1:200"):
     for yy in (14, 22, 30, 38, 46, 54):
         sh.line(x0, y0 + yy, x0 + bw, y0 + yy, 0.25)
     sh.line(x0 + 56, y0 + 22, x0 + 56, y0 + 62, 0.25)
-    f = [(x0 + 3, y0 + 19.5, "NAME:", "Stefan Skaliks"),
-         (x0 + 3, y0 + 27.5, "DATE:", "Nov 18, 2026"),
-         (x0 + 59, y0 + 27.5, "SUBAREA:", "1  (pair 1 & 2)"),
+    f = [(x0 + 3, y0 + 19.5, "NAME:", STUDENT),
+         (x0 + 3, y0 + 27.5, "DATE:", DATE),
+         (x0 + 59, y0 + 27.5, "SUBAREA:", f"{SUBAREA}  (pair 1 & 2)"),
          (x0 + 3, y0 + 35.5, "COURSE:", "URBS 250/4"),
-         (x0 + 59, y0 + 35.5, "LAB SECTION:", "Lab C"),
+         (x0 + 59, y0 + 35.5, "LAB SECTION:", LAB),
          (x0 + 3, y0 + 43.5, "SCALE:", scale),
          (x0 + 59, y0 + 43.5, "SHEET:", f"{sheet_no} / 4"),
          (x0 + 3, y0 + 51.5, "CLIENT:", "David Gagnon"),
@@ -699,6 +704,7 @@ def section_sheet():
 
 
 if __name__ == "__main__":
+    os.makedirs(OUT, exist_ok=True)
     sheets = [axon_sheet(B1, 1, "LOT A (west side of the street)"),
               axon_sheet(B2, 2, "LOT B (east side of the street)"),
               plan_sheet(), section_sheet()]

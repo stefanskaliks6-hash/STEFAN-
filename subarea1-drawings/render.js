@@ -2,7 +2,7 @@
 const { chromium } = require('playwright');
 const fs = require('fs'); const path = require('path');
 (async () => {
-  const dir = __dirname;
+  const dir = process.env.OUTDIR ? path.resolve(process.env.OUTDIR) : __dirname;
   const svgs = fs.readdirSync(dir).filter(f => f.endsWith('.svg')).sort();
   const browser = await chromium.launch();
   const page = await browser.newPage();
@@ -13,7 +13,7 @@ const fs = require('fs'); const path = require('path');
     svgs.map(f => `<div class="p">${fs.readFileSync(path.join(dir, f), 'utf8')}</div>`).join('') +
     `</body></html>`;
   await page.setContent(html);
-  await page.pdf({ path: path.join(dir, 'Subarea1-drawings-11x17.pdf'), width: '17in', height: '11in',
+  await page.pdf({ path: path.join(dir, process.env.PDFNAME || 'Subarea1-drawings-11x17.pdf'), width: '17in', height: '11in',
                    printBackground: true, preferCSSPageSize: true });
   const prev = process.argv[2] || 'preview';
   fs.mkdirSync(path.resolve(dir, prev), { recursive: true });
