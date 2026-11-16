@@ -2,53 +2,39 @@
 
 **1. The system at a glance**
 
-About 85% of Berliners rent (Wetzstein, 2019). Germany made renting secure but let its social housing halve, from 2.09 million units (2006) to 1.05 million (2024) (URBS 370, 2026). In 2020 Berlin's *Mietendeckel* froze rents on about 1.5 million homes. In 2021 the Federal Constitutional Court voided it, not because rent caps are illegitimate but because federal law already regulates rents "conclusively" (Holm, 2021). Campaigners then turned to ownership, invoking Article 15 of the Basic Law. Socialization is **not** in force. In 2021, 59.1% of voters backed a non-binding referendum covering about 240,000 homes (Landeswahlleiterin für Berlin, 2021). A March 2026 framework law takes effect in 2028 but transfers nothing (Schüffner & Dauke, 2026).
+Most Berliners rent, increasingly from large corporate landlords. In 2020 Berlin's *Mietendeckel* froze rents and ordered cuts to excessive ones. In April 2021 the Federal Constitutional Court voided it, not because rent caps are illegitimate but because federal law already regulates rents "conclusively"; landlords could then claim back rent (Holm, 2021). Campaigners turned from prices to ownership under Article 15 of the Basic Law. Socialization is **not** policy in force. A majority backed the non-binding 2021 referendum, and a March 2026 framework law takes effect in 2028 but transfers nothing. No actual bill exists (Schüffner & Dauke, 2026).
 
 **2. What holds it together**
 
-Its base is a voting renter majority (URBS 370, 2026), which is how the referendum won. *Legal:* Article 15 has never been used. Any transfer needs its own proportionate act of parliament that sets compensation and shows milder limits would not suffice (Schüffner & Dauke, 2026). *Institutional:* the proposal targets private firms with over 3,000 Berlin flats (cooperatives exempt) and gives the stock to a public-law institution. Compensation would be "significantly below market value" (Schüffner & Dauke, 2026). *Political:* after the Left's September 2026 election win, its coalition-talks paper with the SPD and Greens raised the threshold to 10,000 units, exempted post-2021 buildings and promised a bill by mid-2028 (Mietervereinigung Berlin, 2026). The weak point is authority: the federal government may block it by law, and the Constitutional Court will likely decide (Schüffner & Dauke, 2026).
+*Political:* the base is an organized tenant movement, Deutsche Wohnen & Co. enteignen, that turned renters into a voting majority. *Institutional:* current proposals target private companies holding more than 3,000 Berlin flats, which could keep 3,000 (cooperatives and non-profits exempt). The transferred stock would go to a public-law institution, and compensation would be "significantly below market value" (Schüffner & Dauke, 2026). *Legal:* Article 15 has never been used. Any transfer needs its own proportionate act of parliament that sets compensation and shows milder limits would not suffice. The weak point is authority. In July 2026 the federal government said it would examine a law to block socialization by the Länder, and the Constitutional Court will likely decide (Schüffner & Dauke, 2026).
 
 **3. Who benefits, who bears the costs**
 
-Wetzstein (2019, p. 280) finds Berlin's winners are early owners and protected tenants; its losers are refugees, people "in the middle" and homeless people. Sitting tenants of large landlords would gain security, shareholders would lose returns, and taxpayers would carry up to €16 billion in compensation (Mietervereinigung Berlin, 2026). Yet socialization adds no homes, and critics argue that subsidized construction or stricter rent rules would be less intrusive (Schüffner & Dauke, 2026), so Wetzstein's outsiders gain little. The 2026 compromise sharpens this trade-off: higher thresholds and new-build exemptions cut cost and legal risk but cover fewer tenants. Tenants also bear legal risk: when the Mietendeckel fell, they suddenly owed back rent (Holm, 2021).
+Sitting tenants of targeted companies would gain stable rents and a voice in management. Shareholders would lose expected returns, and Berlin taxpayers would fund the payout (Schüffner & Dauke, 2026). Tenants of smaller landlords and newcomers are left out, since socialization adds no homes. Critics say subsidized construction or stricter rent rules would be less intrusive (Schüffner & Dauke, 2026).
+
+The central contradiction is compensation. A lower price lets Berlin buy more and keep rents lower, but it also raises the risk that courts will rule the transfer disproportionate, which is the same trap that sank the Mietendeckel. That time, tenants bore the cost through sudden back-rent claims (Holm, 2021).
 
 **4. Could it work here, and should it?**
 
-*Feasibility:* Berlin's legal barrier is absent here. Hulchanski (2006) finds "no legal or constitutional impediment to federal or provincial governments engaging in any variety of housing policies" (p. 232). Québec already regulates rent increases through the Tribunal administratif du logement (TAL, 2025). Compensation is the real limit: the Civil Code (art. 952) and Québec's 2023 expropriation reform require market value (Gouvernement du Québec, 2023), so a below-market transfer would need a new act of the National Assembly.
+*Feasibility:* Berlin's barrier is absent here. Hulchanski (2006) finds "no legal or constitutional impediment to federal or provincial governments engaging in any variety of housing policies" (p. 232). Provinces hold jurisdiction over property, civil rights and tenancy (Pomeroy, 2021, pp. 4, 13), and Québec already regulates rents through complaint-based arbitration at the Tribunal administratif du logement (Pomeroy, 2021, p. 14). Compensation is the real limit: Québec's Civil Code (art. 952) requires a just indemnity, so below-market transfer would need a new provincial law.
 
-*Political barriers:* Hulchanski describes a dual housing system that privileges the ownership-centred "primary" part. Households in the "secondary" part "have little political clout" (p. 240). Montréal has a renter majority, but Québec offers no binding citizen-initiated referendum. Hulchanski (2006, p. 228), borrowing Krueckeberg, asks: "Where are the institutions that promote and protect the economic and political interests of renters?" Berlin built one; Montréal has not.
+*Political barriers:* 68% of Canadian homes are owner-occupied and under 5% are non-market (Pomeroy, 2021, p. 1). Hulchanski calls this a dual system that privileges ownership, while households in its "secondary" part, mostly renters, "have little political clout" (p. 240). Quoting Krueckeberg, he asks: "Where are the institutions that promote and protect the economic and political interests of renters?" (p. 228). Berlin built one; Montréal has not.
 
-*Desirability:* Montréal already runs a market-price version. Through its right of first refusal, it bought about 30 buildings (700+ flats) in Côte-des-Neiges for $103.8 million, now run by the OMHM (Ville de Montréal, 2024). Scaling this would grow a non-market sector that houses only 5% of Canadian households (Hulchanski, 2006, p. 223). But without new building, buying only reshuffles scarcity.
+*Desirability:* Canada faces Berlin's problem. Between 2011 and 2016 it lost over 320,000 rentals under $750, mostly because funds and REITs bought them to raise rents. Pomeroy (2021, p. 39) proposes letting non-profits buy such buildings. Montréal already does this at market price: through its right of first refusal, it bought about 30 buildings with 700+ flats in Côte-des-Neiges for $103.8 million, now run by the OMHM (Ville de Montréal, 2024). This is desirable, but without new building it only shifts who owns scarce housing.
 
-**Conclusion: requires major reform.** Buying at market price is possible with existing tools. Reaching Montréal's 20% non-market goal needs stable provincial and federal funding, and below-market socialization is currently unlikely. Hulchanski warns that Canada's housing system "tends to be taken for granted" (p. 222); Berlin shows that private ownership of rental housing is a choice, not a necessity.
+**Conclusion: requires major reform.** Market-price acquisition is possible with existing tools. Scaling it needs dedicated acquisition funding, which federal programs have lacked (Pomeroy, 2021, p. 40). Below-market socialization is unlikely for now. Hulchanski warns that our housing system "tends to be taken for granted" (p. 222); Berlin shows that private ownership of rental housing is a choice, not a necessity.
 
 ---
 
 **References**
 
-*Source pack (Berlin):*
-
 Holm, A. (2021, April 15). *Berlin's rent cap: What did the Constitutional Court decide?* (L. Balhorn, Trans.). Rosa-Luxemburg-Stiftung. https://www.rosalux.de/en/news/id/44118/berlins-rent-cap-what-did-the-constitutional-court-decide
-
-Schüffner, M., & Dauke, E. K. (2026, September 30). *Socialization of housing companies: Legal analysis of the current debate*. GÖRG. https://www.goerg.de/en/insights/publications/30-09-2026/socialization-of-housing-companies-legal-analysis-of-the-current-debate
-
-*Course readings and materials:*
 
 Hulchanski, J. D. (2006). What factors shape Canadian housing policy? The intergovernmental role in Canada's housing system. In R. Young & C. Leuprecht (Eds.), *Canada: The state of the federation 2004. Municipal-federal-provincial relations in Canada* (pp. 221–247). McGill-Queen's University Press.
 
-URBS 370 Housing Policy. (2026, November 11). *Housing policy around the world: Regimes and choices* [Lecture slides, Session 16]. Moodle.
+Pomeroy, S. (2021). *Background primer on Canada's housing system*. Office of the Federal Housing Advocate; Canadian Housing Evidence Collaborative.
 
-Wetzstein, S. (2019). Comparative housing, urban crisis and political economy: An ethnographically based 'long view' from Auckland, Singapore and Berlin. *Housing Studies, 34*(2), 272–297.
-
-*Other sources:*
-
-Gouvernement du Québec. (2023). *Projet de loi concernant l'expropriation – La refonte de la Loi sur l'expropriation est adoptée*. https://www.quebec.ca/nouvelles/actualites/details/projet-de-loi-concernant-lexpropriation-la-refonte-de-la-loi-sur-lexpropriation-est-adoptee-52480
-
-Landeswahlleiterin für Berlin. (2021). *Volksentscheid über einen Beschluss zur Vergesellschaftung großer Wohnungsunternehmen: Endgültiges Ergebnis*.
-
-Mietervereinigung Berlin. (2026, October 18). *Vergesellschaftung in Berlin: Sondierung sieht Gesetz vor*. https://www.mietervereinigung-berlin.de/news/vergesellschaftung-berlin-sondierung-2026.html
-
-Tribunal administratif du logement. (2025). *Applicable percentages to the criteria for the fixing of rent*. https://www.tal.gouv.qc.ca/en/renewal-of-the-lease-and-fixing-of-rent/applicable-percentages-to-the-criteria-for-the-fixing-of-rent
+Schüffner, M., & Dauke, E. K. (2026, September 30). *Socialization of housing companies: Legal analysis of the current debate*. GÖRG. https://www.goerg.de/en/insights/publications/30-09-2026/socialization-of-housing-companies-legal-analysis-of-the-current-debate
 
 Ville de Montréal. (2024, December 16). *La Ville de Montréal annonce son intention d'acquérir une trentaine d'immeubles totalisant plus de 700 logements dans le secteur de Côte-des-Neiges* [Press release]. https://montreal.ca/communiques-de-presse/la-ville-de-montreal-annonce-son-intention-dacquerir-une-trentaine-dimmeubles-totalisant-plus-de-700
 
