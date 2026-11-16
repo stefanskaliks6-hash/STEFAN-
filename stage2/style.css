@@ -8,3 +8,6 @@ mark { background: #fff176; }
 .refs p { padding-left: 0.5in; text-indent: -0.5in; word-break: break-word; }
 .refs h2 { page-break-before: always; text-align: center; }
 title { display: none; }
+.refs p { line-height: 2; margin: 0; }
+.refs.solo h2 { page-break-before: auto; }
+.note p { line-height: 2; margin-top: 1em; }
