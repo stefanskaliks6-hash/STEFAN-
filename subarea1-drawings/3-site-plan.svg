@@ -13,8 +13,8 @@
 <rect width="431.8" height="279.4" fill="#fff"/>
 <rect x="10.00" y="10.00" width="411.80" height="259.40" fill="none" stroke="#000" stroke-width="0.7"/>
 <rect x="309.80" y="207.40" width="112.00" height="62.00" fill="none" stroke="#000" stroke-width="0.5"/>
-<text x="312.80" y="213.40" font-family="Helvetica, Arial, sans-serif" font-size="3.2" text-anchor="start" font-weight="bold" fill="#000">DESIGN LAB — LOT MASSING</text>
-<text x="312.80" y="218.90" font-family="Helvetica, Arial, sans-serif" font-size="3.0" text-anchor="start" font-weight="normal" fill="#000">Site plan · Lots A &amp; B</text>
+<text x="312.80" y="213.40" font-family="Helvetica, Arial, sans-serif" font-size="3.0" text-anchor="start" font-weight="bold" fill="#000">URBS 250/4 · ASSIGNMENT 2 · BUILDING MASSING</text>
+<text x="312.80" y="218.90" font-family="Helvetica, Arial, sans-serif" font-size="3.0" text-anchor="start" font-weight="normal" fill="#000">Plan view · Task 1 (Lot A) &amp; Task 2 (Lot B)</text>
 <line x1="309.80" y1="221.40" x2="421.80" y2="221.40" stroke="#000" stroke-width="0.25" stroke-linecap="butt"/>
 <line x1="309.80" y1="229.40" x2="421.80" y2="229.40" stroke="#000" stroke-width="0.25" stroke-linecap="butt"/>
 <line x1="309.80" y1="237.40" x2="421.80" y2="237.40" stroke="#000" stroke-width="0.25" stroke-linecap="butt"/>
@@ -23,25 +23,26 @@
 <line x1="309.80" y1="261.40" x2="421.80" y2="261.40" stroke="#000" stroke-width="0.25" stroke-linecap="butt"/>
 <line x1="365.80" y1="229.40" x2="365.80" y2="269.40" stroke="#000" stroke-width="0.25" stroke-linecap="butt"/>
 <text x="312.80" y="226.90" font-family="Helvetica, Arial, sans-serif" font-size="2.3" text-anchor="start" font-weight="bold" fill="#000">NAME:</text>
-<text x="325.80" y="226.90" font-family="Helvetica, Arial, sans-serif" font-size="2.6" text-anchor="start" font-weight="normal" fill="#000">________________________________________</text>
+<text x="325.80" y="226.90" font-family="Helvetica, Arial, sans-serif" font-size="2.6" text-anchor="start" font-weight="normal" fill="#000">Stefan Skaliks</text>
 <text x="312.80" y="234.90" font-family="Helvetica, Arial, sans-serif" font-size="2.3" text-anchor="start" font-weight="bold" fill="#000">DATE:</text>
-<text x="325.80" y="234.90" font-family="Helvetica, Arial, sans-serif" font-size="2.6" text-anchor="start" font-weight="normal" fill="#000">Nov 16, 2026</text>
+<text x="325.80" y="234.90" font-family="Helvetica, Arial, sans-serif" font-size="2.6" text-anchor="start" font-weight="normal" fill="#000">Nov 18, 2026</text>
 <text x="368.80" y="234.90" font-family="Helvetica, Arial, sans-serif" font-size="2.3" text-anchor="start" font-weight="bold" fill="#000">SUBAREA:</text>
 <text x="389.80" y="234.90" font-family="Helvetica, Arial, sans-serif" font-size="2.6" text-anchor="start" font-weight="normal" fill="#000">1  (pair 1 &amp; 2)</text>
 <text x="312.80" y="242.90" font-family="Helvetica, Arial, sans-serif" font-size="2.3" text-anchor="start" font-weight="bold" fill="#000">COURSE:</text>
-<text x="325.80" y="242.90" font-family="Helvetica, Arial, sans-serif" font-size="2.6" text-anchor="start" font-weight="normal" fill="#000">______________</text>
+<text x="325.80" y="242.90" font-family="Helvetica, Arial, sans-serif" font-size="2.6" text-anchor="start" font-weight="normal" fill="#000">URBS 250/4</text>
 <text x="368.80" y="242.90" font-family="Helvetica, Arial, sans-serif" font-size="2.3" text-anchor="start" font-weight="bold" fill="#000">LAB SECTION:</text>
-<text x="389.80" y="242.90" font-family="Helvetica, Arial, sans-serif" font-size="2.6" text-anchor="start" font-weight="normal" fill="#000">________</text>
+<text x="389.80" y="242.90" font-family="Helvetica, Arial, sans-serif" font-size="2.6" text-anchor="start" font-weight="normal" fill="#000">Lab C</text>
 <text x="312.80" y="250.90" font-family="Helvetica, Arial, sans-serif" font-size="2.3" text-anchor="start" font-weight="bold" fill="#000">SCALE:</text>
 <text x="325.80" y="250.90" font-family="Helvetica, Arial, sans-serif" font-size="2.6" text-anchor="start" font-weight="normal" fill="#000">1:200</text>
 <text x="368.80" y="250.90" font-family="Helvetica, Arial, sans-serif" font-size="2.3" text-anchor="start" font-weight="bold" fill="#000">SHEET:</text>
 <text x="381.80" y="250.90" font-family="Helvetica, Arial, sans-serif" font-size="2.6" text-anchor="start" font-weight="normal" fill="#000">3 / 4</text>
-<text x="312.80" y="258.90" font-family="Helvetica, Arial, sans-serif" font-size="2.3" text-anchor="start" font-weight="bold" fill="#000">PAPER:</text>
-<text x="325.80" y="258.90" font-family="Helvetica, Arial, sans-serif" font-size="2.6" text-anchor="start" font-weight="normal" fill="#000">11 × 17 in</text>
+<text x="312.80" y="258.90" font-family="Helvetica, Arial, sans-serif" font-size="2.3" text-anchor="start" font-weight="bold" fill="#000">CLIENT:</text>
+<text x="325.80" y="258.90" font-family="Helvetica, Arial, sans-serif" font-size="2.6" text-anchor="start" font-weight="normal" fill="#000">David Gagnon</text>
 <text x="368.80" y="258.90" font-family="Helvetica, Arial, sans-serif" font-size="2.3" text-anchor="start" font-weight="bold" fill="#000">PRINT:</text>
 <text x="381.80" y="258.90" font-family="Helvetica, Arial, sans-serif" font-size="2.6" text-anchor="start" font-weight="normal" fill="#000">100% / actual size</text>
 <text x="312.80" y="266.90" font-family="Helvetica, Arial, sans-serif" font-size="2.2" text-anchor="start" font-weight="normal" fill="#000">Lot 10 m × 20 m = 200 m² · front setback 4 m · 3 m floor-to-floor</text>
-<text x="20.00" y="24.00" font-family="Helvetica, Arial, sans-serif" font-size="6" text-anchor="start" font-weight="bold" fill="#000">SITE PLAN — TWO LOTS FACING ACROSS THE STREET</text>
+<text x="20.00" y="24.00" font-family="Helvetica, Arial, sans-serif" font-size="6" text-anchor="start" font-weight="bold" fill="#000">PLAN VIEW — BOTH SITUATIONS, 15 m APART</text>
+<text x="20.00" y="31.00" font-family="Helvetica, Arial, sans-serif" font-size="2.8" text-anchor="start" font-weight="normal" fill="#000">Lots face each other across a 15 m street: 2.5 m sidewalk + 10 m road + 2.5 m sidewalk · scale 1:200</text>
 <rect x="146.50" y="67.00" width="50.00" height="160.00" fill="#efefef" stroke="#000" stroke-width="0"/>
 <line x1="146.50" y1="227.00" x2="146.50" y2="67.00" stroke="#000" stroke-width="0.4" stroke-linecap="butt"/>
 <line x1="196.50" y1="227.00" x2="196.50" y2="67.00" stroke="#000" stroke-width="0.4" stroke-linecap="butt"/>

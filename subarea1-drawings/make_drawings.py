@@ -14,24 +14,34 @@ FONT = "Helvetica, Arial, sans-serif"
 
 # ---------------------------------------------------------------- the two buildings
 LOT_W, LOT_D, SETBACK = 10.0, 20.0, 4.0
-B1 = dict(key="T1", name="TASK 1 — NO ELEVATOR (4 FLOORS, MAX AREA)",
+B1 = dict(key="T1", name="TASK 1: NO ELEVATOR",
           short="BUILDING 1 · NO ELEVATOR", depth=14.0, floors=4, top=None,
           height=12.0, gfa=560, far="2.8", cov="70%", yard=2.0,
-          floors_txt="4 × 140 m²", foot_txt="10 m × 14 m = 140 m²",
-          why=["Without an elevator the building is limited to 4 floors.",
-               "4 floors × 140 m² (max floor plate) = 560 m².",
-               "Any smaller footprint would lose floor area, so",
-               "70% coverage is as low as it can go."])
-B2 = dict(key="T2", name="TASK 2 — LARGE BACKYARD (60% COVERAGE, MAX AREA)",
+          floors_txt="140 m² × 4 floors", foot_txt="10 m × 14 m = 140 m²",
+          nfloors_txt="4",
+          why=["Task: 4 floors that maximize the built area, then the",
+               "smallest footprint that still gives that area.",
+               "Max footprint = 70% × 200 m² = 140 m².",
+               "Max GFA on 4 floors = 4 × 140 m² = 560 m² (FAR 2.8 < 5).",
+               "A footprint under 140 m² would give less than 560 m²,",
+               "so 140 m² (10 m × 14 m) is the smallest footprint.",
+               "Depth 14 m fits in the 16 m behind the 4 m setback,",
+               "leaving a 2 m rear yard.",
+               "Check: 6 m ≤ 12 m ≤ 27 m · 40% ≤ 70% ≤ 70% · FAR 2.8 ≤ 5"])
+B2 = dict(key="T2", name="TASK 2: LARGE BACKYARD",
           short="BUILDING 2 · LARGE BACKYARD", depth=12.0, floors=8, top=4.0,
           height=27.0, gfa=1000, far="5.0", cov="60%", yard=4.0,
-          floors_txt="8 × 120 m² + 1 × 40 m²", foot_txt="10 m × 12 m = 120 m²",
-          why=["60% of 200 m² = 120 m² footprint (10 × 12 m).",
-               "8 floors × 120 m² = 960 m²; 9 full floors = 1,080 m²",
-               "would break the 1,000 m² (FAR 5.0) cap.",
-               "A 40 m² 9th floor (10 × 4 m) makes exactly 1,000 m².",
-               "Fallback if partial floors are not allowed:",
-               "8 × 120 m² = 960 m², FAR 4.8, height 24 m."])
+          floors_txt="120 m² × 8 floors + 40 m² × 1 floor",
+          foot_txt="10 m × 12 m = 120 m²", nfloors_txt="9 (8 full + 1 partial)",
+          why=["Task: 60% coverage, maximize the built area.",
+               "Footprint = 60% × 200 m² = 120 m² = 10 m × 12 m.",
+               "Max GFA = FAR 5 × 200 m² = 1,000 m².",
+               "Max height 27 m ÷ 3 m = 9 floors.",
+               "8 × 120 m² = 960 m²; 9 × 120 m² = 1,080 m² > 1,000 m².",
+               "Remaining 40 m² goes on a 9th floor (10 m × 4 m):",
+               "960 + 40 = 1,000 m² (partial top floor, as in Lab 6).",
+               "Backyard 20 − 4 − 12 = 4 m deep (40 m²).",
+               "Check: 6 m ≤ 27 m ≤ 27 m · 40% ≤ 60% ≤ 70% · FAR 5.0 ≤ 5"])
 
 
 def esc(s):
@@ -99,19 +109,19 @@ def frame(sh, title, drawing, sheet_no, scale="1:200"):
     x0, y0, bw, bh = W - 10 - 112, H - 10 - 62, 112, 62
     sh.rect(x0, y0, bw, bh, sw=0.5)
     rows = [(y0 + 14, None)]
-    sh.text(x0 + 3, y0 + 6, "DESIGN LAB — LOT MASSING", 3.2, weight="bold")
+    sh.text(x0 + 3, y0 + 6, "URBS 250/4 · ASSIGNMENT 2 · BUILDING MASSING", 3.0, weight="bold")
     sh.text(x0 + 3, y0 + 11.5, drawing, 3.0)
     for yy in (14, 22, 30, 38, 46, 54):
         sh.line(x0, y0 + yy, x0 + bw, y0 + yy, 0.25)
     sh.line(x0 + 56, y0 + 22, x0 + 56, y0 + 62, 0.25)
-    f = [(x0 + 3, y0 + 19.5, "NAME:", "________________________________________"),
-         (x0 + 3, y0 + 27.5, "DATE:", "Nov 16, 2026"),
+    f = [(x0 + 3, y0 + 19.5, "NAME:", "Stefan Skaliks"),
+         (x0 + 3, y0 + 27.5, "DATE:", "Nov 18, 2026"),
          (x0 + 59, y0 + 27.5, "SUBAREA:", "1  (pair 1 & 2)"),
-         (x0 + 3, y0 + 35.5, "COURSE:", "______________"),
-         (x0 + 59, y0 + 35.5, "LAB SECTION:", "________"),
+         (x0 + 3, y0 + 35.5, "COURSE:", "URBS 250/4"),
+         (x0 + 59, y0 + 35.5, "LAB SECTION:", "Lab C"),
          (x0 + 3, y0 + 43.5, "SCALE:", scale),
          (x0 + 59, y0 + 43.5, "SHEET:", f"{sheet_no} / 4"),
-         (x0 + 3, y0 + 51.5, "PAPER:", "11 × 17 in"),
+         (x0 + 3, y0 + 51.5, "CLIENT:", "David Gagnon"),
          (x0 + 59, y0 + 51.5, "PRINT:", "100% / actual size")]
     for xx, yy, k, v in f:
         sh.text(xx, yy, k, 2.3, weight="bold")
@@ -168,26 +178,46 @@ def dim_v(sh, x, y1, y2, label, ext_from=None, size=2.6, tick=1.2, side=-1):
 
 
 # ---------------------------------------------------------------- axonometric sheets
+ISO = math.cos(math.radians(30))
+
+
 def axon_sheet(b, sheet_no, lot_name):
     sh = Sheet()
-    frame(sh, f"AXONOMETRIC — {b['name']}", f"Axonometric · {b['short'].title()} · {lot_name}",
-          sheet_no)
-    ox, oy = 150.0, 238.0
-    ex = (0.5, -math.sqrt(3) / 2)        # plan x (lot width) on screen, true length
-    ey = (-math.sqrt(3) / 2, -0.5)       # plan y (depth from street) on screen, true length
+    frame(sh, f"AXONOMETRIC VIEW — {b['name']}",
+          f"Axonometric (isometric) · {b['short'].title()}", sheet_no)
+    ox, oy = 140.0, 245.0
+    ex = (ISO, -0.5)          # plan x (lot width, 10 m) -> 30° up to the right
+    ey = (-ISO, -0.5)         # plan y (lot depth from street, 20 m) -> 30° up to the left
 
     def P(x, y, z=0.0):
         return (ox + S * (x * ex[0] + y * ey[0]), oy + S * (x * ex[1] + y * ey[1] - z))
 
+    CON = "#9a9a9a"           # construction lines (light)
+
+    def con(p, q):
+        sh.line(p[0], p[1], q[0], q[1], 0.12, color=CON)
+
+    y_back = SETBACK + b["depth"]
+    zf = b["floors"] * FF
+    zt = b["height"]
+
+    # construction lines: 30° axes through lot / building corners, verticals at corners
+    for yy in (0, SETBACK, y_back, LOT_D):
+        con(P(-3, yy), P(LOT_W + 3, yy))
+    for xx in (0, LOT_W):
+        con(P(xx, -3), P(xx, LOT_D + 3))
+    for xx, yy in ((0, SETBACK), (LOT_W, SETBACK), (0, y_back)):
+        con(P(xx, yy, 0), P(xx, yy, zt + 2.5))
+    for z in [FF * i for i in range(1, int(zt / FF) + 1)]:
+        con(P(LOT_W, SETBACK, z), P(LOT_W + 1.2, SETBACK, z))
+
     # sidewalk + curb (context)
     sh.poly([P(0, -2.5), P(LOT_W, -2.5), P(LOT_W, 0), P(0, 0)], fill="#f2f2f2", w=0.18)
-    sh.text(*P(5.6, -1.25), "SIDEWALK", 2.2, anchor="middle", rot=-60)
+    sh.text(*P(5.0, -1.55), "SIDEWALK 2.5 m", 2.2, anchor="middle", rot=-30)
     # lot
     sh.poly([P(0, 0), P(LOT_W, 0), P(LOT_W, LOT_D), P(0, LOT_D)], fill="#fff", w=0.35)
-    # setback line
     sh.line(*P(-0.8, SETBACK), *P(LOT_W + 0.8, SETBACK), 0.25, dash="2,1,0.4,1")
-    # ground texture in front setback + backyard (light dots of grass)
-    y_back = SETBACK + b["depth"]
+    # grass texture in front setback + backyard
     for yy in [i * 0.8 + 0.4 for i in range(int(LOT_D / 0.8))]:
         if SETBACK < yy < y_back:
             continue
@@ -195,127 +225,128 @@ def axon_sheet(b, sheet_no, lot_name):
             px, py = P(xx + (0.4 if int(yy / 0.8) % 2 else 0), yy)
             sh.line(px, py, px + 0.5, py - 0.3, 0.12, color="#555")
 
-    # buildings
-    def box(x0, x1, y0, y1, z0, z1, levels):
+    def box(x0, x1, y0, y1, z0, z1):
         left = [P(x0, y0, z0), P(x0, y1, z0), P(x0, y1, z1), P(x0, y0, z1)]
         front = [P(x0, y0, z0), P(x1, y0, z0), P(x1, y0, z1), P(x0, y0, z1)]
         top = [P(x0, y0, z1), P(x1, y0, z1), P(x1, y1, z1), P(x0, y1, z1)]
-        sh.poly(left, fill="#c9c9c9", w=0.45)
-        sh.poly(front, fill="#ffffff", w=0.45)
-        sh.poly(top, fill="#ececec", w=0.45)
-        for z in levels:
+        sh.poly(left, fill="#c9c9c9", w=0.5)
+        sh.poly(front, fill="#ffffff", w=0.5)
+        sh.poly(top, fill="#ececec", w=0.5)
+        for z in [FF * i for i in range(1, 10)]:
             if z0 < z < z1:
                 sh.line(*P(x0, y0, z), *P(x0, y1, z), 0.18)
                 sh.line(*P(x0, y0, z), *P(x1, y0, z), 0.18)
 
-    levels = [FF * i for i in range(1, 10)]
-    zf = b["floors"] * FF
-    box(0, LOT_W, SETBACK, y_back, 0, zf, levels)
+    box(0, LOT_W, SETBACK, y_back, 0, zf)
     if b["top"]:
-        box(0, LOT_W, SETBACK, SETBACK + b["top"], zf, zf + FF, levels)
+        box(0, LOT_W, SETBACK, SETBACK + b["top"], zf, zf + FF)
 
-    # floor numbers on the street facade
+    # floor labels on the street facade
     for i in range(b["floors"]):
-        px, py = P(LOT_W * 0.5, SETBACK, i * FF + 1.2)
-        sh.text(px, py, f"FLOOR {i + 1} · {LOT_W * b['depth']:.0f} m²", 2.0, anchor="middle",
-                rot=-60)
+        sh.text(*P(LOT_W * 0.5, SETBACK, i * FF + 1.1),
+                f"FLOOR {i + 1} · {LOT_W * b['depth']:.0f} m²", 2.1, anchor="middle", rot=-30)
     if b["top"]:
-        px, py = P(LOT_W * 0.5, SETBACK, zf + 1.2)
-        sh.text(px, py, "FLOOR 9 · 40 m²", 2.0, anchor="middle", rot=-60)
+        sh.text(*P(LOT_W * 0.5, SETBACK, zf + 1.1), "FLOOR 9 · 40 m²", 2.1, anchor="middle",
+                rot=-30)
 
-    # --- dimensions in the ground plane along the left side (x = -2.5)
-    def gdim(xa, ya, xb, yb, off, label, ang):
-        # dimension line offset along -x (screen: -ex)
-        a = P(xa - off, ya)
-        c = P(xb - off, yb)
+    def tick(px, py, d):
+        # 45° architectural tick across a dimension line running in direction d
+        a = math.atan2(d[1], d[0]) + math.radians(45)
+        sh.line(px - 1.0 * math.cos(a), py - 1.0 * math.sin(a), px + 1.0 * math.cos(a),
+                py + 1.0 * math.sin(a), 0.4)
+
+    # depth dimensions in the ground plane, left of the lot (offset along -x)
+    def gdim(ya, yb, off, label):
+        a, c = P(-off, ya), P(-off, yb)
         sh.line(*a, *c, 0.18)
-        for (px, py), (gx, gy) in ((a, P(xa, ya)), (c, P(xb, yb))):
-            sh.line(gx - ex[0] * 0.6 * S, gy - ex[1] * 0.6 * S, px - ex[0] * 0.4 * S,
-                    py - ex[1] * 0.4 * S, 0.12)
-            sh.line(px - 0.9, py - 0.4, px + 0.9, py + 0.4, 0.4)
-        mx, my = (a[0] + c[0]) / 2, (a[1] + c[1]) / 2
-        sh.text(mx - ex[0] * 1.6, my - ex[1] * 1.6, label, 2.6, anchor="middle", rot=ang)
+        for yy, (px, py) in ((ya, a), (yb, c)):
+            g = P(-0.4, yy)
+            q = P(-off - 0.6, yy)
+            sh.line(g[0], g[1], q[0], q[1], 0.12)
+            tick(px, py, ey)
+        m = P(-off - 0.9, (ya + yb) / 2)
+        sh.text(m[0], m[1], label, 2.5, anchor="middle", rot=30)
 
-    gdim(0, 0, 0, SETBACK, 2.0, "4 m setback", 30)
-    gdim(0, SETBACK, 0, y_back, 2.0, f"{b['depth']:.0f} m", 30)
-    gdim(0, y_back, 0, LOT_D, 2.0, f"{b['yard']:.0f} m yard", 30)
-    gdim(0, 0, 0, LOT_D, 5.0, "lot depth 20 m", 30)
+    gdim(0, SETBACK, 2.0, "4 m front setback")
+    gdim(SETBACK, y_back, 2.0, f"{b['depth']:.0f} m building depth")
+    gdim(y_back, LOT_D, 2.0, f"{b['yard']:.0f} m yard")
+    gdim(0, LOT_D, 5.0, "lot depth 20 m")
 
-    # width along the street (in front of the sidewalk, y = -4.5)
+    # width dimension in front of the sidewalk (offset along -y)
     a, c = P(0, -4.5), P(LOT_W, -4.5)
     sh.line(*a, *c, 0.18)
-    for (px, py), xx in ((a, 0), (c, LOT_W)):
-        g = P(xx, -2.5)
-        sh.line(g[0] - ey[0] * 0.4 * S, g[1] - ey[1] * 0.4 * S, px - ey[0] * 0.4 * S,
-                py - ey[1] * 0.4 * S, 0.12)
-        sh.line(px - 0.4, py - 0.9, px + 0.4, py + 0.9, 0.4)
-    m = P(LOT_W / 2, -5.6)
-    sh.text(m[0], m[1], "10 m (full lot width)", 2.6, anchor="middle", rot=-60)
+    for xx, (px, py) in ((0, a), (LOT_W, c)):
+        g, q = P(xx, -2.9), P(xx, -5.1)
+        sh.line(g[0], g[1], q[0], q[1], 0.12)
+        tick(px, py, ex)
+    m = P(LOT_W / 2, -5.7)
+    sh.text(m[0], m[1] + 1.0, "10 m frontage (building = full lot width)", 2.5, anchor="middle",
+            rot=-30)
 
-    # height dimension to the right of the street facade (x = 12)
-    zt = b["height"]
-    base = P(LOT_W + 2.2, SETBACK, 0)
-    topp = P(LOT_W + 2.2, SETBACK, zt)
+    # height dimension right of the street facade
+    hx = LOT_W + 2.4
+    base, topp = P(hx, SETBACK, 0), P(hx, SETBACK, zt)
     sh.line(base[0], base[1] + 1.5, topp[0], topp[1] - 1.5, 0.18)
     for z in [0] + [FF * i for i in range(1, int(zt / FF) + 1)]:
-        px, py = P(LOT_W + 2.2, SETBACK, z)
-        g = P(LOT_W + 0.4, SETBACK, z)
-        sh.line(g[0], g[1], px + 1.2, py - 0.6, 0.12)
-        sh.line(px - 0.9, py + 0.9, px + 0.9, py - 0.9, 0.35 if z in (0, zt) else 0.2)
-    mx = base[0] + 2.0
-    sh.text(mx + 4.0, (base[1] + topp[1]) / 2, f"H = {zt:.0f} m", 3.2, anchor="middle",
-            rot=90, weight="bold")
-    sh.text(mx + 8.5, (base[1] + topp[1]) / 2,
-            f"({int(zt / FF)} × 3 m floor-to-floor)", 2.4, anchor="middle", rot=90)
+        px, py = P(hx, SETBACK, z)
+        tick(px, py, (0, -1)) if z in (0, zt) else sh.line(px - 0.6, py, px + 0.6, py, 0.25)
+    sh.text(base[0] + 4.2, (base[1] + topp[1]) / 2, f"HEIGHT {zt:.0f} m", 3.2,
+            anchor="middle", rot=90, weight="bold")
+    sh.text(base[0] + 8.4, (base[1] + topp[1]) / 2,
+            f"{int(zt / FF)} floors × 3 m", 2.4, anchor="middle", rot=90)
 
-    # labels with leaders
-    def leader(pt, tx, ty, s, anchor="start"):
+    def leader(pt, tx, ty, lines, anchor="start"):
         sh.line(pt[0], pt[1], tx, ty, 0.15)
         sh.circle(pt[0], pt[1], 0.45, fill="#000", w=0.1)
-        sh.text(tx + (1 if anchor == "start" else -1), ty + 1, s, 2.6, anchor=anchor)
+        for i, s in enumerate(lines):
+            sh.text(tx + (1 if anchor == "start" else -1), ty + 1 + i * 3.6, s, 2.6,
+                    anchor=anchor)
 
-    leader(P(LOT_W * 0.6, SETBACK * 0.5), 205, 262, "FRONT SETBACK (4 m) — street side")
-    leader(P(0.8, y_back + b["yard"] / 2), 60, 120 if b["floors"] > 4 else 150,
-           f"BACKYARD {b['yard']:.0f} m deep ({LOT_W * b['yard']:.0f} m²)", anchor="end")
-    rp = P(LOT_W * 0.55, (SETBACK + y_back) / 2 + (2 if b["top"] else 0), zf)
-    leader(rp, 205, 52 if b["top"] else 150, f"ROOF · footprint {b['foot_txt']}")
+    leader(P(6, 2), 212, 212, ["FRONT SETBACK 4 m (street side)"])
+    leader(P(0.5, y_back + b["yard"] * 0.75), 51, 183,
+           [f"BACKYARD {b['yard']:.0f} m deep", f"({LOT_W * b['yard']:.0f} m²)"], anchor="end")
+    leader(P(6, (SETBACK + y_back) / 2 + (2 if b["top"] else 0), zf), 212,
+           62 if b["top"] else 118,
+           [f"ROOF{' OF 8th FLOOR' if b['top'] else ''}", f"footprint {b['foot_txt']}"])
     if b["top"]:
-        leader(P(LOT_W * 0.5, SETBACK + 2, zf + FF), 84, 58,
-               "PARTIAL 9th FLOOR 10 m × 4 m = 40 m²", anchor="end")
-        sh.text(83, 62.5, "(flush with the street facade)", 2.6, anchor="end")
+        leader(P(5, SETBACK + 2, zf + FF), 100, 50,
+               ["PARTIAL 9th FLOOR 10 m × 4 m = 40 m²", "(on the street side of the roof)"],
+               anchor="end")
 
-    north_arrow(sh, 40, 240, ang_deg=math.degrees(math.atan2(ex[1], ex[0])) if lot_name.startswith("LOT A")
-                else math.degrees(math.atan2(-ex[1], -ex[0])))
-    sh.text(40, 258, "north, in the ground plane", 2.2, anchor="middle")
-    scale_bar(sh, W - 150, 180)
-    sh.text(20, 31, f"{lot_name} · 1:200 plan-oblique axonometric (plan rotated 30°/60°, "
-                    "all horizontal and vertical dimensions true length)", 2.8)
+    nang = math.degrees(math.atan2(ex[1], ex[0])) if sheet_no == 1 else \
+        math.degrees(math.atan2(-ex[1], -ex[0]))
+    north_arrow(sh, 36, 112, ang_deg=nang)
+    sh.text(36, 130, "north (ground plane)", 2.2, anchor="middle")
+    scale_bar(sh, W - 152, 196)
+    sh.text(20, 31, f"{lot_name} · scale 1:200 · isometric: plan axes at 30° to the horizontal, "
+                    "all lengths measured true along the axes", 2.8)
 
-    # ---- chart
-    cx0, cy0 = W - 10 - 140, 40
-    rows = [("Lot", "10 m × 20 m = 200 m²"),
-            ("Floors × floor area", b["floors_txt"]),
-            ("Footprint", b["foot_txt"]),
-            ("Lot coverage", f"{b['cov']}  ({LOT_W * b['depth']:.0f} ÷ 200)"),
-            ("Building height", f"{b['height']:.0f} m  ({int(b['height'] / FF)} × 3 m)"),
-            ("Gross floor area (GFA)", f"{b['gfa']:,} m²"),
-            ("Floor area ratio (FAR)", f"{b['far']}  ({b['gfa']:,} ÷ 200)"),
-            ("Front setback", "4 m"),
-            ("Backyard depth", f"{b['yard']:.0f} m  (20 − 4 − {b['depth']:.0f})")]
+    # ---- chart (rows exactly as listed in the Assignment 2 handout)
+    cx0, cy0, cw, kw = W - 10 - 142, 40, 140, 64
+    rows = [("Total GFA", f"{b['gfa']:,} m²"),
+            ("Built FAR", f"{b['far']}   ({b['gfa']:,} m² ÷ 200 m² lot)"),
+            ("Coverage", f"{b['cov']}   ({LOT_W * b['depth']:.0f} m² ÷ 200 m² lot)"),
+            ("Height", f"{zt:.0f} m   ({int(zt / FF)} floors × 3 m)"),
+            ("Dimensions of Building Footprint", b["foot_txt"]),
+            ("Area of Floor(s) × Number of Floor(s)", b["floors_txt"]),
+            ("Number of floors", b["nfloors_txt"])]
     sh.text(cx0, cy0 - 3, "CHART", 4, weight="bold")
     rh = 7.5
-    sh.rect(cx0, cy0, 130, rh * len(rows), sw=0.45)
+    sh.rect(cx0, cy0, cw, rh * len(rows), sw=0.45)
     for i, (k, v) in enumerate(rows):
         y = cy0 + i * rh
         if i:
-            sh.line(cx0, y, cx0 + 130, y, 0.2)
-        sh.text(cx0 + 2, y + 5, k, 2.7, weight="bold")
-        sh.text(cx0 + 52, y + 5, v, 2.9)
-    sh.line(cx0 + 50, cy0, cx0 + 50, cy0 + rh * len(rows), 0.2)
-    ry = cy0 + rh * len(rows) + 9
-    sh.text(cx0, ry, "HOW IT WAS FOUND", 3.2, weight="bold")
+            sh.line(cx0, y, cx0 + cw, y, 0.2)
+        sh.text(cx0 + 2, y + 5, k, 2.6, weight="bold")
+        sh.text(cx0 + kw + 2, y + 5, v, 2.8)
+    sh.line(cx0 + kw, cy0, cx0 + kw, cy0 + rh * len(rows), 0.2)
+    sh.text(cx0, cy0 + rh * len(rows) + 4.5,
+            "Lot 10 m × 20 m = 200 m² · front setback 4 m · rear yard "
+            f"{b['yard']:.0f} m · side setbacks 0 m", 2.3)
+    ry = cy0 + rh * len(rows) + 13
+    sh.text(cx0, ry, "CALCULATION", 3.2, weight="bold")
     for i, s in enumerate(b["why"]):
-        sh.text(cx0, ry + 6 + i * 4.6, s, 2.7)
+        sh.text(cx0, ry + 5.5 + i * 4.3, s, 2.55, weight="bold" if s.startswith("Check") else "normal")
     return sh
 
 
@@ -357,7 +388,8 @@ def person_plan(sh, cx, cy):
 
 def plan_sheet():
     sh = Sheet()
-    frame(sh, "SITE PLAN — TWO LOTS FACING ACROSS THE STREET", "Site plan · Lots A & B", 3)
+    frame(sh, "PLAN VIEW — BOTH SITUATIONS, 15 m APART", "Plan view · Task 1 (Lot A) & Task 2 (Lot B)", 3)
+    sh.text(20, 31, "Lots face each other across a 15 m street: 2.5 m sidewalk + 10 m road + 2.5 m sidewalk · scale 1:200", 2.8)
     px0, py0 = 34.0, 172.0                       # screen position of X=0, Y=0 (plan metres)
 
     def T(X, Y):
@@ -521,7 +553,8 @@ def person_elev(sh, T, X, flip=False, h=1.75):
 
 def section_sheet():
     sh = Sheet()
-    frame(sh, "SECTION A–A — THROUGH BOTH LOTS AND THE STREET", "Section A–A · Lots A & B", 4)
+    frame(sh, "SECTION VIEW A–A — BOTH BUILDINGS, 15 m APART", "Section A–A · Task 1 (Lot A) & Task 2 (Lot B)", 4)
+    sh.text(20, 31, "Cut along line A–A on the plan view, looking north · 2.5 m sidewalk + 10 m road + 2.5 m sidewalk between the lots · scale 1:200", 2.8)
     px0, gy = 30.0, 196.0
 
     def T(X, z):
@@ -648,6 +681,10 @@ def section_sheet():
     dim_h(sh, T(0, 0)[0], T(55, 0)[0], yd2 + 2, "55 m overall  (27.5 cm at 1:200)", size=2.6)
 
     scale_bar(sh, 335, 60)
+    north_arrow(sh, 352, 150)
+    sh.text(352, 168, "plan north (section looks north)", 2.2, anchor="middle")
+    sh.text(*T(-1.0, -1.2), "WEST", 2.4, anchor="end", weight="bold")
+    sh.text(*T(56.0, -1.2), "EAST", 2.4, weight="bold")
     notes = ["NOTES",
              "Cut through the middle of both lots",
              "(line A–A on the site plan), looking north.",
